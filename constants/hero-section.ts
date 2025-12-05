@@ -1,9 +1,10 @@
 export const heroData = {
     badge: {
-        text: "Full-Stack Developer",
+        text: "Open for Projects",
     },
     heading: {
-        text: "Hi, I'm Patrick Arganza",
+        text: "Hi, I'm",
+        highlighted: "Patrick",
     },
     description: {
         text: "Crafting full-stack web applications with the MERN stack. I specialize in building scalable, performant, and user-centric solutions that solve real-world problems.",
@@ -15,7 +16,7 @@ export const heroData = {
             colorScheme: "primary", // from-primary/10 to-accent/10
         },
         {
-            title: "Rank 30,000 in LeetCode",
+            title: "Top 5% in Leetcode",
             subtitle: "Out of 5,000,000+ users",
             colorScheme: "accent", // from-accent/10 to-secondary/10
         },
@@ -47,25 +48,25 @@ export const heroData = {
             description: "Full-stack web development",
             colorScheme: "primary",
             position: {
-                className: "top-0 right-0",
+                className: "top-[-24px] right-0",
             },
             delay: 0,
         },
         {
             title: "API Development",
-            description: "RESTful & GraphQL APIs",
+            description: "RESTful & Express",
             colorScheme: "accent",
             position: {
-                className: "top-32 left-0",
+                className: "top-[-24px] left-0",
             },
             delay: 0.2,
         },
         {
             title: "Database Design",
-            description: "MongoDB, PostgreSQL",
+            description: "MongoDB, Supabase",
             colorScheme: "secondary",
             position: {
-                className: "bottom-0 right-12",
+                className: "bottom-[-14px] right-12",
             },
             delay: 0.4,
         },

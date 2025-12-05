@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react";
 
 export function AnimatedBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     const particles: Array<{
-      x: number
-      y: number
-      vx: number
-      vy: number
-      size: number
-      opacity: number
-    }> = []
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      opacity: number;
+    }> = [];
 
     // Initialize particles
     for (let i = 0; i < 30; i++) {
@@ -33,45 +33,50 @@ export function AnimatedBackground() {
         vy: (Math.random() - 0.5) * 0.5,
         size: Math.random() * 1.5 + 0.5,
         opacity: Math.random() * 0.5 + 0.2,
-      })
+      });
     }
 
     const animate = () => {
-      ctx.fillStyle = "rgba(8, 8, 8, 0.02)"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // Higher alpha value (0.15) makes trails fade out within ~5 seconds
+      // Lower values = longer trails, higher values = shorter trails
+      ctx.fillStyle = "rgba(8, 8, 8, 0.10)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle) => {
-        particle.x += particle.vx
-        particle.y += particle.vy
+        particle.x += particle.vx;
+        particle.y += particle.vy;
 
-        if (particle.x < 0) particle.x = canvas.width
-        if (particle.x > canvas.width) particle.x = 0
-        if (particle.y < 0) particle.y = canvas.height
-        if (particle.y > canvas.height) particle.y = 0
+        if (particle.x < 0) particle.x = canvas.width;
+        if (particle.x > canvas.width) particle.x = 0;
+        if (particle.y < 0) particle.y = canvas.height;
+        if (particle.y > canvas.height) particle.y = 0;
 
-        ctx.fillStyle = `rgba(147, 51, 234, ${particle.opacity})`
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fill()
-      })
+        ctx.fillStyle = `rgba(147, 51, 234, ${particle.opacity})`;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
 
-      requestAnimationFrame(animate)
-    }
+      requestAnimationFrame(animate);
+    };
 
-    animate()
+    animate();
 
     const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <canvas ref={canvasRef} className="absolute inset-0 opacity-60" />
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full opacity-60"
+      />
 
       {/* Animated gradient orbs */}
       <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-glow" />
@@ -93,11 +98,27 @@ export function AnimatedBackground() {
         >
           <defs>
             <filter id="noise">
-              <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="4" result="noise" />
-              <feDisplacementMap in="SourceGraphic" in2="noise" scale="100" xChannelSelector="R" yChannelSelector="G" />
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.02"
+                numOctaves="4"
+                result="noise"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="100"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
             </filter>
           </defs>
-          <rect width="1200" height="800" fill="url(#meshGradient)" filter="url(#noise)" />
+          <rect
+            width="1200"
+            height="800"
+            fill="url(#meshGradient)"
+            filter="url(#noise)"
+          />
         </svg>
       </div>
 
@@ -111,11 +132,12 @@ export function AnimatedBackground() {
       />
 
       <div
-        className="absolute inset-0 opacity-40"
+        className="absolute inset-0 opacity-20"
         style={{
-          background: "radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.4) 100%)",
+          background:
+            "radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.2) 100%)",
         }}
       />
     </div>
-  )
+  );
 }

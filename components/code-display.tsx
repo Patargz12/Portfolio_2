@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 export function CodeDisplay() {
   return (
@@ -13,14 +13,15 @@ export function CodeDisplay() {
       <div className="p-4 font-mono text-xs sm:text-sm overflow-x-auto">
         <div className="text-muted-foreground">
           <div className="text-accent">
-            {"const"} <span className="text-primary">App</span> = () {"=>"} {"{"}‌
+            {"const"} <span className="text-primary">App</span> = () {"=>"}{" "}
+            {"{"}‌
           </div>
           <div className="ml-4">
             <span className="text-secondary">return</span> {`(`}
           </div>
           <div className="ml-8 text-primary">
             {`<div>`}
-            <span className="text-muted-foreground">...</span>
+            <span className="text-white">Software Engineer</span>
             {`</div>`}
           </div>
           <div className="ml-4">{`)`}</div>
@@ -28,5 +29,5 @@ export function CodeDisplay() {
         </div>
       </div>
     </div>
-  )
+  );
 }

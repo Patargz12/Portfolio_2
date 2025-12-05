@@ -1,3 +1,11 @@
+import {
+    hackathonBadgePlaceholder,
+    hackathonBadgePlaceholder2,
+    leetcodeBadgePlaceholder,
+    leetcodeBadgePlaceholder2,
+    softwareEngineerPlaceholder,
+} from "@/public"
+
 export const overviewData = {
     header: {
         title: "About",
@@ -5,7 +13,7 @@ export const overviewData = {
         subtitle: "A passionate developer with a strong foundation in full-stack development and competitive programming.",
     },
     mainSection: {
-        image: "/software-engineer-placeholder.jpg",
+        image: softwareEngineerPlaceholder,
         imageAlt: "Software Engineer",
         title: "Software Engineer",
         subtitle: "JavaScript & Full-Stack Specialist",
@@ -16,11 +24,11 @@ export const overviewData = {
         {
             images: [
                 {
-                    src: "/leetcode-badge-placeholder.jpg",
+                    src: leetcodeBadgePlaceholder,
                     alt: "LeetCode Badge 1",
                 },
                 {
-                    src: "/leetcode-badge-placeholder.jpg",
+                    src: leetcodeBadgePlaceholder2,
                     alt: "LeetCode Badge 2",
                 },
             ],
@@ -33,11 +41,11 @@ export const overviewData = {
         {
             images: [
                 {
-                    src: "/hackathon-badge-placeholder.jpg",
+                    src: hackathonBadgePlaceholder,
                     alt: "Hackathon Badge 1",
                 },
                 {
-                    src: "/hackathon-badge-placeholder.jpg",
+                    src: hackathonBadgePlaceholder2,
                     alt: "Hackathon Badge 2",
                 },
             ],

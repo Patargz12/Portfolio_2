@@ -1,38 +1,43 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { overviewData } from "@/constants/overview-section"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { overviewData } from "@/constants/overview-section";
 
 export function OverviewSection() {
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+    setIsLoaded(true);
+  }, []);
 
   return (
-    <section className="relative py-20 sm:py-32 bg-background/80">
+    <section className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
-          className={`transition-all duration-1000 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+          className={`transition-all duration-1000 ${
+            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
         >
           {/* Section Header */}
           <div className="mb-16 text-center">
-            <h2 className="text-4xl sm:text-5xl font-bold text-balance">
+            <h2 className="text-5xl md:text-6xl font-bold text-balance mb-4">
               {overviewData.header.title}{" "}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 {overviewData.header.highlightedWord}
               </span>
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {overviewData.header.subtitle}
             </p>
           </div>
 
           <div
-            className={`mb-16 transition-all duration-500 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
+            className={`mb-16 transition-all duration-500 ${
+              isLoaded
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}
           >
             <div className="rounded-lg border border-border bg-card/50 backdrop-blur-sm p-8 md:p-12">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -50,7 +55,9 @@ export function OverviewSection() {
                 {/* Content */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <h3 className="text-3xl font-bold text-foreground">{overviewData.mainSection.title}</h3>
+                    <h3 className="text-3xl font-bold text-foreground">
+                      {overviewData.mainSection.title}
+                    </h3>
                     <p className="text-base font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {overviewData.mainSection.subtitle}
                     </p>
@@ -67,8 +74,11 @@ export function OverviewSection() {
             {overviewData.achievements.map((achievement, achievementIndex) => (
               <div
                 key={achievementIndex}
-                className={`transition-all duration-500 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
+                className={`transition-all duration-500 ${
+                  isLoaded
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-10"
+                }`}
                 style={{ transitionDelay: achievement.transitionDelay }}
               >
                 <div className="rounded-lg border border-border bg-card/50 backdrop-blur-sm p-8 h-full">
@@ -94,7 +104,9 @@ export function OverviewSection() {
                     {/* Content */}
                     <div className="space-y-3">
                       <div className="space-y-1">
-                        <h3 className="text-2xl font-bold text-foreground">{achievement.title}</h3>
+                        <h3 className="text-2xl font-bold text-foreground">
+                          {achievement.title}
+                        </h3>
                         <p className="text-sm font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                           {achievement.subtitle}
                         </p>
@@ -111,5 +123,5 @@ export function OverviewSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

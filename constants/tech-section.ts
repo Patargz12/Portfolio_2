@@ -1,6 +1,7 @@
 export const techStackData = {
     header: {
-        title: "Tech Stack",
+        title: "Tech",
+        highlightedWord: "Stack",
         subtitle: "A comprehensive collection of technologies and tools I use to build innovative solutions",
     },
     categories: [

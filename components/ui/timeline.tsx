@@ -1,58 +1,68 @@
-"use client"
-import { useScroll, useTransform, motion } from "motion/react"
-import type React from "react"
-import { useEffect, useRef, useState } from "react"
+"use client";
+import { useScroll, useTransform, motion } from "motion/react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface TimelineEntry {
-  title: string
-  content: React.ReactNode
+  title: string;
+  content: React.ReactNode;
 }
 
 export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
-  const ref = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [height, setHeight] = useState(0)
-  const [activeIndex, setActiveIndex] = useState(0) // track active timeline item
+  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0); // track active timeline item
 
   useEffect(() => {
     if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      setHeight(rect.height)
+      const rect = ref.current.getBoundingClientRect();
+      setHeight(rect.height);
     }
-  }, [ref])
+  }, [ref]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const index = Number.parseInt(entry.target.getAttribute("data-index") || "0")
-            setActiveIndex(index)
+            const index = Number.parseInt(
+              entry.target.getAttribute("data-index") || "0"
+            );
+            setActiveIndex(index);
           }
-        })
+        });
       },
-      { threshold: 0.3 },
-    )
+      {
+        threshold: 0,
+        rootMargin: "-40% 0px -60% 0px", // Trigger when item is near top of viewport
+      }
+    );
 
-    const items = document.querySelectorAll("[data-timeline-item]")
-    items.forEach((item) => observer.observe(item))
+    const items = document.querySelectorAll("[data-timeline-item]");
+    items.forEach((item) => observer.observe(item));
 
-    return () => observer.disconnect()
-  }, [])
+    return () => observer.disconnect();
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 10%", "end 50%"],
-  })
+  });
 
-  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height])
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1])
+  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   return (
-    <div className="w-full bg-background dark:bg-background font-sans md:px-10" ref={containerRef}>
-      <div className="max-w-7xl mx-auto py-20 px-4 md:px-8 lg:px-10">
-        <h2 className="text-lg md:text-4xl mb-4 text-foreground max-w-4xl font-bold">Work Experience</h2>
-        <p className="text-muted-foreground text-sm md:text-base max-w-sm">
+    <div className="w-full font-sans md:px-10" ref={containerRef}>
+      <div className="max-w-7xl mx-auto py-2 px-4 md:px-8 lg:px-10 relative z-20 text-center">
+        <h2 className="text-5xl md:text-6xl font-bold mb-4 max-w-4xl mx-auto">
+          Work{" "}
+          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            Experience
+          </span>
+        </h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           My professional journey and the impact I&apos;ve made along the way.
         </p>
       </div>
@@ -61,7 +71,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         {data.map((item, index) => (
           <div
             key={index}
-            className="flex justify-start pt-10 md:pt-40 md:gap-10"
+            className="flex justify-start pt-2 md:pt-40 md:gap-10"
             data-timeline-item
             data-index={index}
           >
@@ -106,5 +116,5 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

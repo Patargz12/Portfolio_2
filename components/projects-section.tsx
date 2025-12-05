@@ -1,22 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, Grid3x3, LayoutGrid, ExternalLink, Github } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Project, projectsData } from "@/constants/projects-section"
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Grid3x3,
+  LayoutGrid,
+  ExternalLink,
+  Github,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Project, projectsData } from "@/constants/projects-section";
 
-export type { Project }
+export type { Project };
 
 interface ProjectCardProps {
-  project: Project
-  index: number
+  project: Project;
+  index: number;
 }
 
 const ProjectCard = ({ project, index }: ProjectCardProps) => {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
@@ -44,10 +51,10 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               animate={
                 isHovered
                   ? {
-                    x: Math.random() * 100,
-                    y: -20,
-                    opacity: [0, 1, 0],
-                  }
+                      x: Math.random() * 100,
+                      y: -20,
+                      opacity: [0, 1, 0],
+                    }
                   : {}
               }
               transition={{
@@ -77,7 +84,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
             transition={{ delay: index * 0.1 + 0.2 }}
           >
             <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-sm border-0 shadow-lg shadow-primary/50">
-              {project.category}
+              {project.categories[0] ?? "Project"}
             </Badge>
           </motion.div>
 
@@ -115,13 +122,19 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
         <div className="p-6 space-y-4">
           <motion.h3
             className="text-2xl font-bold text-foreground"
-            animate={{ color: isHovered ? "hsl(var(--primary))" : "hsl(var(--foreground))" }}
+            animate={{
+              color: isHovered
+                ? "hsl(var(--primary))"
+                : "hsl(var(--foreground))",
+            }}
             transition={{ duration: 0.3 }}
           >
             {project.title}
           </motion.h3>
 
-          <p className="text-muted-foreground leading-relaxed line-clamp-3">{project.description}</p>
+          <p className="text-muted-foreground leading-relaxed line-clamp-3">
+            {project.description}
+          </p>
 
           {/* Tech tags with stagger animation */}
           <div className="flex flex-wrap gap-2">
@@ -151,56 +164,60 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
         />
       </Card>
     </motion.div>
-  )
-}
+  );
+};
 
 interface ProjectsProps {
-  projects?: Project[]
-  projectsPerPage?: number
+  projects?: Project[];
+  projectsPerPage?: number;
 }
 
 export const Projects = ({
   projects = projectsData.projects,
   projectsPerPage = projectsData.projectsPerPage,
 }: ProjectsProps) => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid")
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [viewMode, setViewMode] = useState<"grid" | "masonry">("grid");
 
   const filteredProjects =
-    selectedCategory === "All" ? projects : projects.filter((p) => p.category === selectedCategory)
+    selectedCategory === "All"
+      ? projects
+      : projects.filter((p) => p.categories.includes(selectedCategory));
 
-  const totalPages = Math.ceil(filteredProjects.length / projectsPerPage)
-  const startIndex = (currentPage - 1) * projectsPerPage
-  const endIndex = startIndex + projectsPerPage
-  const paginatedProjects = filteredProjects.slice(startIndex, endIndex)
-
-  const validCurrentPage = Math.min(currentPage, Math.max(1, totalPages))
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProjects.length / projectsPerPage)
+  );
+  const validCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (validCurrentPage - 1) * projectsPerPage;
+  const endIndex = startIndex + projectsPerPage;
+  const paginatedProjects = filteredProjects.slice(startIndex, endIndex);
 
   const goToPage = (page: number) => {
-    const validPage = Math.max(1, Math.min(page, totalPages))
-    setCurrentPage(validPage)
-  }
+    const validPage = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(validPage);
+  };
 
   const nextPage = () => {
     if (validCurrentPage < totalPages) {
-      goToPage(validCurrentPage + 1)
+      goToPage(validCurrentPage + 1);
     }
-  }
+  };
 
   const prevPage = () => {
     if (validCurrentPage > 1) {
-      goToPage(validCurrentPage - 1)
+      goToPage(validCurrentPage - 1);
     }
-  }
+  };
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category)
-    setCurrentPage(1)
-  }
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
 
   return (
-    <section className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
@@ -223,36 +240,30 @@ export const Projects = ({
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
-          className="text-center mb-16 space-y-6"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <motion.h2
-            className="text-5xl md:text-7xl font-bold text-foreground"
+            className="text-5xl md:text-6xl font-bold mb-4"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
             {projectsData.header.title}{" "}
-            <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary">
+            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               {projectsData.header.highlightedWord}
             </span>
           </motion.h2>
           <motion.p
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             {projectsData.header.subtitle}
           </motion.p>
-          <motion.div
-            className="h-1 w-32 bg-gradient-to-r from-primary via-accent to-primary mx-auto rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: 128 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          />
         </motion.div>
 
         {/* Category filters and view toggle */}
@@ -267,10 +278,11 @@ export const Projects = ({
               <motion.button
                 key={category}
                 onClick={() => handleCategoryChange(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/50"
-                  : "bg-secondary/50 text-foreground hover:bg-primary/20 hover:text-primary"
-                  }`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/50"
+                    : "bg-secondary/50 text-foreground hover:bg-primary/20 hover:text-primary"
+                }`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05, duration: 0.3 }}
@@ -287,7 +299,9 @@ export const Projects = ({
               variant="ghost"
               size="icon"
               onClick={() => setViewMode("grid")}
-              className={`${viewMode === "grid" ? "bg-primary text-primary-foreground" : ""}`}
+              className={`${
+                viewMode === "grid" ? "bg-primary text-primary-foreground" : ""
+              }`}
             >
               <LayoutGrid className="h-5 w-5" />
             </Button>
@@ -295,7 +309,11 @@ export const Projects = ({
               variant="ghost"
               size="icon"
               onClick={() => setViewMode("masonry")}
-              className={`${viewMode === "masonry" ? "bg-primary text-primary-foreground" : ""}`}
+              className={`${
+                viewMode === "masonry"
+                  ? "bg-primary text-primary-foreground"
+                  : ""
+              }`}
             >
               <Grid3x3 className="h-5 w-5" />
             </Button>
@@ -306,10 +324,11 @@ export const Projects = ({
         <AnimatePresence mode="wait">
           <motion.div
             key={`${selectedCategory}-${currentPage}`}
-            className={`grid gap-8 mb-12 ${viewMode === "grid"
-              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-auto"
-              }`}
+            className={`grid gap-8 mb-12 ${
+              viewMode === "grid"
+                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-auto"
+            }`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -323,8 +342,14 @@ export const Projects = ({
 
         {/* Empty state */}
         {paginatedProjects.length === 0 && (
-          <motion.div className="text-center py-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <p className="text-muted-foreground text-xl">No projects found in this category</p>
+          <motion.div
+            className="text-center py-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <p className="text-muted-foreground text-xl">
+              No projects found in this category
+            </p>
           </motion.div>
         )}
 
@@ -348,32 +373,39 @@ export const Projects = ({
 
             <div className="flex gap-2">
               {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                let page
+                let page;
                 if (totalPages <= 5) {
-                  page = i + 1
+                  page = i + 1;
                 } else if (validCurrentPage <= 3) {
-                  page = i + 1
+                  page = i + 1;
                 } else if (validCurrentPage >= totalPages - 2) {
-                  page = totalPages - 4 + i
+                  page = totalPages - 4 + i;
                 } else {
-                  page = validCurrentPage - 2 + i
+                  page = validCurrentPage - 2 + i;
                 }
 
                 return (
-                  <motion.div key={page} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                  <motion.div
+                    key={page}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
                     <Button
                       onClick={() => goToPage(page)}
-                      variant={validCurrentPage === page ? "default" : "outline"}
+                      variant={
+                        validCurrentPage === page ? "default" : "outline"
+                      }
                       size="icon"
-                      className={`w-10 h-10 transition-all duration-300 ${validCurrentPage === page
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/50"
-                        : "border-border hover:border-primary hover:bg-primary/10"
-                        }`}
+                      className={`w-10 h-10 transition-all duration-300 ${
+                        validCurrentPage === page
+                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/50"
+                          : "border-border hover:border-primary hover:bg-primary/10"
+                      }`}
                     >
                       {page}
                     </Button>
                   </motion.div>
-                )
+                );
               })}
             </div>
 
@@ -396,10 +428,10 @@ export const Projects = ({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Page {validCurrentPage} of {totalPages} • Showing {paginatedProjects.length} of {filteredProjects.length}{" "}
-          projects
+          Page {validCurrentPage} of {totalPages} • Showing{" "}
+          {paginatedProjects.length} of {filteredProjects.length} projects
         </motion.div>
       </div>
     </section>
-  )
-}
+  );
+};
