@@ -27,19 +27,19 @@ export const heroData = {
     },
     socialLinks: [
         {
+            platform: "Instagram",
+            url: "https://www.instagram.com/pat_argz/",
+            icon: "Instagram",
+        },
+        {
             platform: "GitHub",
-            url: "#",
+            url: "https://github.com/Patargz12",
             icon: "Github",
         },
         {
             platform: "LinkedIn",
-            url: "#",
+            url: "https://www.linkedin.com/in/patrick-arganza-816331173/",
             icon: "Linkedin",
-        },
-        {
-            platform: "Email",
-            url: "#",
-            icon: "Mail",
         },
     ],
     floatingCards: [

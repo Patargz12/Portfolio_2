@@ -13,8 +13,8 @@ export const overviewData = {
         subtitle: "A passionate developer with a strong foundation in full-stack development and competitive programming.",
     },
     mainSection: {
-        image: softwareEngineerPlaceholder,
-        imageAlt: "Software Engineer",
+        image: "/about/profile_img.jpg",
+        imageAlt: "Patrick Arganza",
         title: "Software Engineer",
         subtitle: "JavaScript & Full-Stack Specialist",
         description:

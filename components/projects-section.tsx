@@ -75,7 +75,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
             animate={{ scale: isHovered ? 1.15 : 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+          <div className="absolute inset-0 to-transparent" />
 
           <motion.div
             className="absolute top-4 left-4"
