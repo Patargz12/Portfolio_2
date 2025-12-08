@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { overviewData } from "@/constants/overview-section";
+import { ImagePopover } from "./image-popover";
 
 export function OverviewSection() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -42,12 +43,12 @@ export function OverviewSection() {
             <div className="rounded-lg border border-border bg-card/50 backdrop-blur-sm p-8 md:p-12">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 {/* Image */}
-                <div className="relative h-96 rounded-lg overflow-hidden border border-border bg-background/50 group hover:border-primary/50 transition-all duration-300">
+                <div className="relative h-96 w-[80%] mx-auto rounded-lg overflow-hidden border border-border bg-background/50 group hover:border-primary/50 transition-all duration-300">
                   <Image
                     src={overviewData.mainSection.image}
                     alt={overviewData.mainSection.imageAlt}
                     fill
-                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                 </div>
@@ -83,23 +84,13 @@ export function OverviewSection() {
               >
                 <div className="rounded-lg border border-border bg-card/50 backdrop-blur-sm p-8 h-full">
                   <div className="space-y-6">
-                    {/* Two Image Grid */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {achievement.images.map((image, imageIndex) => (
-                        <div
-                          key={imageIndex}
-                          className="relative h-40 rounded-lg overflow-hidden border border-border bg-background/50 group hover:border-primary/50 transition-all duration-300"
-                        >
-                          <Image
-                            src={image.src}
-                            alt={image.alt}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                        </div>
-                      ))}
-                    </div>
+                    {/* Image with Popover */}
+                    <ImagePopover
+                      mainImage={achievement.image}
+                      mainImageAlt={achievement.imageAlt}
+                      popoverImage={achievement.popoverImage}
+                      popoverImageAlt={`${achievement.title} Details`}
+                    />
 
                     {/* Content */}
                     <div className="space-y-3">

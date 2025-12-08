@@ -33,7 +33,7 @@ export const projectsData = {
             id: 2,
             title: "Pokemon Game",
             description:
-                "A basic game in which the user must guess which Pokemon is on their screen. It is also my first NextJs project. I put the answers on the console.",
+                "A basic game in which the user must guess which Pokemon is on their screen. It is also my first NextJs project.",
             image: "/projects/pokemon.png",
             tags: ["Nextjs", "Api", "Git"],
             categories: ["Web App"],
@@ -44,7 +44,7 @@ export const projectsData = {
             id: 3,
             title: "Pulp Dental Clinic",
             description:
-                "I developed a landing page for a dental clinic using ReactJS, utilizing five front-end libraries to enhance animations, components, and overall functionality.",
+                "I developed a landing page for a dental clinic using ReactJS, utilizing five front-end libraries for bettter UI / UX.",
             image: "/projects/Pulp_Clinic.jpg",
             tags: ["ReactJS", "Javascript", "Tailwind"],
             categories: ["Web App"],
@@ -121,7 +121,7 @@ export const projectsData = {
             id: 10,
             title: "Raikou",
             description:
-                "Developed a Retrieval-Augmented Generation type Application for Toyota Gazoo Racing languages. Configured the application to be able to use provided racing datasets by Toyota",
+                "Built a RAG application for Toyota to query and analyze racing datasets provided by Toyota using AI-powered retrieval",
             image: "/projects/Raikou_Img.jpg",
             tags: ["NextJS", "MongoDB", "Google Gemini", "Express"],
             categories: ["Web App", "AI/ML", "SaaS"],

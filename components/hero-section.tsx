@@ -60,7 +60,7 @@ export function HeroSection() {
                 return (
                   <div
                     key={index}
-                    className={`px-6 py-4 rounded-lg bg-gradient-to-r ${
+                    className={`w-full sm:w-auto px-6 py-4 rounded-lg bg-gradient-to-r ${
                       achievement.colorScheme === "primary"
                         ? "from-primary/10 to-accent/10 border-primary/30 hover:border-primary/50"
                         : "from-accent/10 to-secondary/10 border-accent/30 hover:border-accent/50"
@@ -72,7 +72,7 @@ export function HeroSection() {
                         {achievement.title}
                       </p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1 text-left">
                       {achievement.subtitle}
                     </p>
                   </div>
@@ -83,13 +83,14 @@ export function HeroSection() {
 
           {/* Right Column - Visual Elements */}
           <div
-            className={`relative h-96 lg:h-full transition-all duration-1000 delay-300 ${
+            className={`relative h-38 md:h-96 lg:h-full transition-all duration-1000 delay-300 ${
               isLoaded
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
             }`}
           >
-            <div className="absolute inset-0 space-y-4">
+            {/* Floating Cards - Hidden on mobile */}
+            <div className="hidden md:block absolute inset-0 space-y-4">
               {heroData.floatingCards.map((card, index) => (
                 <FloatingCard
                   key={index}

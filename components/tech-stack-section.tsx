@@ -10,6 +10,7 @@ interface TechCardProps {
 
 export function TechStackSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [hoveredAdditionalIndex, setHoveredAdditionalIndex] = useState<number | null>(null);
 
   return (
     <section className="relative w-full py-20 px-4 md:px-8 lg:px-16">
@@ -98,31 +99,71 @@ export function TechStackSection() {
 
         {/* Additional Tech Categories Section */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {techStackData.additionalCategories.map(
-            (additionalCategory, index: number) => (
+          {techStackData.additionalCategories.map((category, index) => (
+            <div
+              key={index}
+              onMouseEnter={() => setHoveredAdditionalIndex(index)}
+              onMouseLeave={() => setHoveredAdditionalIndex(null)}
+              className="group relative cursor-pointer"
+            >
+              {/* Card Background with Gradient */}
               <div
-                key={index}
-                className="p-6 rounded-xl border border-neutral-700 bg-neutral-900/50 backdrop-blur-sm hover:bg-neutral-900/80 transition-all duration-300"
-              >
-                <h3 className="text-xl font-bold text-white mb-3">
-                  {additionalCategory.title}
-                </h3>
-                <p className="text-sm text-neutral-400 mb-4">
-                  {additionalCategory.subtitle}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {additionalCategory.items.map((item: string, idx: number) => (
-                    <span
-                      key={idx}
-                      className="px-3 py-1 rounded-full text-xs font-medium bg-neutral-800/50 text-neutral-300 border border-neutral-700/30"
-                    >
-                      {item}
-                    </span>
-                  ))}
+                className={`absolute inset-0 rounded-xl bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl`}
+              />
+
+              {/* Card Content */}
+              <div className="relative h-full p-6 rounded-xl border border-neutral-700 bg-neutral-900/50 backdrop-blur-sm group-hover:bg-neutral-900/80 transition-all duration-300 group-hover:border-neutral-600">
+                {/* Icon and Title */}
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <div className="text-3xl mb-2">{category.icon}</div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-200">
+                      {category.title}
+                    </h3>
+                  </div>
+                  {hoveredAdditionalIndex === index && (
+                    <div className="animate-pulse">
+                      <div
+                        className={`w-2 h-2 rounded-full bg-gradient-to-r ${category.color}`}
+                      />
+                    </div>
+                  )}
                 </div>
+
+                {/* Subtitle */}
+                <p className="text-sm text-neutral-400 mb-4">
+                  {category.subtitle}
+                </p>
+
+                {/* Technologies Grid */}
+                <div className="flex flex-wrap gap-2">
+                  {category.technologies.map(
+                    (tech: string, techIndex: number) => (
+                      <span
+                        key={techIndex}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 ${
+                          hoveredAdditionalIndex === index
+                            ? "bg-neutral-700/50 text-cyan-300 border border-cyan-500/30"
+                            : "bg-neutral-800/50 text-neutral-300 border border-neutral-700/30"
+                        }`}
+                      >
+                        {tech}
+                      </span>
+                    )
+                  )}
+                </div>
+
+                {/* Hover indicator line */}
+                <div
+                  className={`absolute bottom-0 left-0 h-1 rounded-full transition-all duration-500 ${
+                    hoveredAdditionalIndex === index
+                      ? `w-full bg-gradient-to-r ${category.color}`
+                      : "w-0"
+                  }`}
+                />
               </div>
-            )
-          )}
+            </div>
+          ))}
         </div>
       </div>
     </section>

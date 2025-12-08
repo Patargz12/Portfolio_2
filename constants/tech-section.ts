@@ -52,12 +52,16 @@ export const techStackData = {
         {
             title: "Core Computer Science",
             subtitle: "Fundamental concepts and principles",
-            items: ["OOP", "MVC", "Data Structures", "Algorithms", "Linux", "Ubuntu", "Agile", "Scrum"],
+            technologies: ["OOP", "MVC", "Data Structures", "Algorithms", "Linux", "Ubuntu", "Agile", "Scrum"],
+            color: "from-sky-500 to-blue-600",
+            icon: "💻",
         },
         {
             title: "No-Code & Visual Development",
             subtitle: "Visual development and content management",
-            items: ["WordPress", "Webflow", "Elementor", "Beaver Builder", "Colibri", "Wix"],
+            technologies: ["WordPress", "Webflow", "Elementor", "Beaver Builder", "Colibri", "Wix"],
+            color: "from-pink-500 to-rose-500",
+            icon: "🧩",
         },
     ],
 }
