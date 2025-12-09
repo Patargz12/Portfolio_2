@@ -212,3 +212,14 @@
 .timeline-dot-active {
   animation: timeline-dot-glow 2s ease-in-out infinite;
 }
+
+/* Custom cursor styling for clickable popovers */
+.cursor-pointer {
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+}
+
+.cursor-pointer:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}

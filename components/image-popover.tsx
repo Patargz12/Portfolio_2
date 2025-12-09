@@ -9,6 +9,7 @@ interface ImagePopoverProps {
   popoverImage: string;
   popoverImageAlt: string;
   className?: string;
+  link?: string;
 }
 
 export function ImagePopover({
@@ -17,12 +18,13 @@ export function ImagePopover({
   popoverImage,
   popoverImageAlt,
   className = "",
+  link,
 }: ImagePopoverProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  return (
+  const content = (
     <div
-      className={`relative ${className}`}
+      className={`relative ${className} ${link ? "cursor-pointer" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -62,4 +64,20 @@ export function ImagePopover({
       )}
     </div>
   );
+
+  // If link is provided, wrap in an anchor tag
+  if (link) {
+    return (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return content;
 }

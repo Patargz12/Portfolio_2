@@ -35,7 +35,7 @@ export function TechStackSection() {
               key={index}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className="group relative cursor-pointer"
+              className="group relative"
             >
               {/* Card Background with Gradient */}
               <div

@@ -12,7 +12,7 @@ export const overviewData = {
         image: "/about/profile_img.jpg",
         imageAlt: "Patrick Arganza",
         title: "Software Engineer",
-        subtitle: "JavaScript & Full-Stack Specialist",
+        subtitle: "Full-Stack Developer | Software Engineer",
         description:
             "Proficient in modern JavaScript frameworks and libraries including React, Node.js, and Express. Experienced in building scalable full-stack applications with clean, maintainable code and best practices.",
     },
@@ -24,8 +24,9 @@ export const overviewData = {
             title: "LeetCode Rank",
             subtitle: "Top 5% in Leetcode",
             description:
-                "Achieved a competitive ranking in the top 0.6% of LeetCode users through consistent problem-solving. Demonstrated strong algorithmic thinking, data structure expertise, and dedication to continuous improvement.",
+                "Achieved a competitive ranking in the top 5% of LeetCode users through consistent problem-solving. Demonstrated strong algorithmic thinking, data structure expertise, and dedication to continuous improvement.",
             transitionDelay: "150ms",
+            link: "https://leetcode.com/u/vt3Yo4HDkF/",
         },
         {
             image: "/about/hackathon_winner.jpg",
@@ -36,6 +37,7 @@ export const overviewData = {
             description:
                 "Built an innovative full-stack solution under time constraints. Showcased rapid prototyping skills, teamwork, technical execution, and the ability to deliver a polished product in a competitive environment.",
             transitionDelay: "300ms",
+            link: "https://devpost.com/arganzapatrick/achievements",
         },
     ],
 }

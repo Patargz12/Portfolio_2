@@ -90,6 +90,7 @@ export function OverviewSection() {
                       mainImageAlt={achievement.imageAlt}
                       popoverImage={achievement.popoverImage}
                       popoverImageAlt={`${achievement.title} Details`}
+                      link={achievement.link}
                     />
 
                     {/* Content */}

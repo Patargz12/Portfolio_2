@@ -10,7 +10,7 @@ const Card = () => {
     <StyledWrapper>
       <div className="card">
         <img src="https://uiverse.io/astronaut.png" alt="" className="image" />
-        <div className="heading">We're on Social Media</div>
+        <div className="heading">Connect With Me</div>
         <div className="icons">
           <a
             href={instagramLink}
