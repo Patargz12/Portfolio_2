@@ -217,7 +217,7 @@ export const Projects = ({
   };
 
   return (
-    <section className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section id="projects" className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-1/2 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
@@ -366,7 +366,7 @@ export const Projects = ({
               disabled={validCurrentPage === 1}
               variant="outline"
               size="icon"
-              className="border-border hover:border-primary hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 bg-transparent"
+              className="border-border hover:border-primary hover:bg-primary/80 hover:text-primary-foreground hover:shadow-md hover:shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 bg-card/50"
             >
               <ChevronLeft className="h-5 w-5" />
             </Button>
@@ -399,7 +399,7 @@ export const Projects = ({
                       className={`w-10 h-10 transition-all duration-300 ${
                         validCurrentPage === page
                           ? "bg-primary text-primary-foreground shadow-lg shadow-primary/50"
-                          : "border-border hover:border-primary hover:bg-primary/10"
+                          : "bg-card/50 border-border hover:border-primary hover:bg-primary/80 hover:text-primary-foreground hover:shadow-md hover:shadow-primary/30"
                       }`}
                     >
                       {page}
@@ -414,7 +414,7 @@ export const Projects = ({
               disabled={validCurrentPage === totalPages}
               variant="outline"
               size="icon"
-              className="border-border hover:border-primary hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 bg-transparent"
+              className="border-border hover:border-primary hover:bg-primary/80 hover:text-primary-foreground hover:shadow-md hover:shadow-primary/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 bg-card/50"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>

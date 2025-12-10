@@ -29,7 +29,7 @@ export function ImagePopover({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Main Image */}
-      <div className="relative h-42 w-full rounded-lg overflow-hidden border border-border bg-background/50 group transition-all duration-300">
+      <div className="relative h-42 w-full rounded-lg overflow-hidden border border-border bg-background/50 group hover:border-primary/50 transition-all duration-300">
         <Image
           src={mainImage}
           alt={mainImageAlt}

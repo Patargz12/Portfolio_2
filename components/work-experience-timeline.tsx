@@ -22,5 +22,9 @@ export function WorkExperienceTimeline() {
     ),
   }))
 
-  return <Timeline data={timelineData} />
+  return (
+    <section id="work">
+      <Timeline data={timelineData} />
+    </section>
+  )
 }

@@ -126,7 +126,7 @@ export const projectsData = {
             tags: ["NextJS", "MongoDB", "Google Gemini", "Express"],
             categories: ["Web App", "AI/ML", "SaaS"],
             github: "https://github.com/Patargz12/Racing_Repo",
-            link: "https://salina.app/",
+            link: "https://racing-repo.vercel.app/",
         },
         {
             id: 11,
@@ -137,7 +137,7 @@ export const projectsData = {
             tags: ["NextJS", "MongoDB", "Google Gemini", "Express"],
             categories: ["Web App", "AI/ML", "SaaS"],
             github: "https://github.com/Patargz12/GPT",
-            link: "https://salina.app/",
+            link: "https://dota-gpt.vercel.app/home",
         },
         {
             id: 12,

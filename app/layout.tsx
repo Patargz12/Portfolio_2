@@ -9,26 +9,25 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Full-Stack Developer | MERN Portfolio",
+  title: "Patrick Arganza | Portfolio",
   description:
     "Full-stack web developer specializing in React, Node.js, MongoDB, and Express. Building scalable web applications.",
   generator: "v0.app",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
+        url: "/Portfolio_Icon.ico",
+        sizes: "48x48",
+        type: "image/png",
       },
       {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "/Portfolio_Icon.ico",
+        sizes: "32x32",
+        type: "image/png",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/Portfolio_Icon.ico",
+    shortcut: "/Portfolio_Icon.ico",
   },
 }
 
