@@ -223,3 +223,65 @@
   filter: brightness(1.1);
   transform: scale(1.02);
 }
+/* Animated Rainbow Border Effect */
+@keyframes rainbow-border {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 400% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.rainbow-border-container {
+  position: relative;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2px;
+}
+
+.rainbow-border-container::before,
+.rainbow-border-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  padding: 2px;
+  background: linear-gradient(
+    45deg,
+    oklch(0.6 0.2 280),
+    oklch(0.65 0.2 250),
+    oklch(0.5 0.15 200),
+    oklch(0.65 0.2 250),
+    oklch(0.6 0.2 280),
+    oklch(0.65 0.2 250),
+    oklch(0.5 0.15 200),
+    oklch(0.65 0.2 250),
+    oklch(0.6 0.2 280)
+  );
+  background-size: 400%;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rainbow-border 20s linear infinite;
+  pointer-events: none;
+}
+
+.rainbow-border-container::after {
+  filter: blur(15px);
+  opacity: 0.8;
+}
+
+.rainbow-border-inner {
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: linear-gradient(to bottom right, #000, #1a1a1a);
+  z-index: 1;
+}
