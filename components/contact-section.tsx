@@ -3,7 +3,7 @@ import ContactCard from "@/components/ui/contact-card";
 
 export function ContactSection() {
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 py-20 relative z-20">
+    <section id="contact" className="min-h-screen flex items-center justify-center px-4 py-20 relative z-20">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         {/* Left Column - Contact Card */}
         <div className="flex justify-center items-center md:justify-center">

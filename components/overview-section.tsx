@@ -13,7 +13,7 @@ export function OverviewSection() {
   }, []);
 
   return (
-    <section className="relative py-20 sm:py-32">
+    <section id="about" className="relative py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className={`transition-all duration-1000 ${
@@ -42,15 +42,17 @@ export function OverviewSection() {
           >
             <div className="rounded-lg border border-border bg-card/50 backdrop-blur-sm p-8 md:p-12">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                {/* Image */}
-                <div className="relative h-96 w-[80%] mx-auto rounded-lg overflow-hidden border border-border bg-background/50 group hover:border-primary/50 transition-all duration-300">
-                  <Image
-                    src={overviewData.mainSection.image}
-                    alt={overviewData.mainSection.imageAlt}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                {/* Image with Rainbow Border */}
+                <div className="rainbow-border-container">
+                  <div className="rainbow-border-inner relative h-96 group transition-all duration-300">
+                    <Image
+                      src={overviewData.mainSection.image}
+                      alt={overviewData.mainSection.imageAlt}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                  </div>
                 </div>
 
                 {/* Content */}
