@@ -44,7 +44,7 @@ export function OverviewSection() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 {/* Image with Rainbow Border */}
                 <div className="rainbow-border-container">
-                  <div className="rainbow-border-inner relative h-96 group transition-all duration-300">
+                  <div className="rainbow-border-inner relative aspect-[4/4] w-full max-w-sm mx-auto group transition-all duration-300 overflow-hidden">
                     <Image
                       src={overviewData.mainSection.image}
                       alt={overviewData.mainSection.imageAlt}
