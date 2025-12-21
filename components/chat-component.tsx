@@ -50,8 +50,6 @@ export function ChatWidget() {
       { role: "assistant", content: "" },
     ])
 
-    const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "YOUR_API_KEY_HERE"
-
     // Build conversation history (exclude the initial greeting and the current messages we just added)
     // We want to send all previous user/assistant pairs, but not the initial greeting or current messages
     // Note: messages now includes the userMessage we just added, so we need to exclude it
@@ -61,41 +59,55 @@ export function ChatWidget() {
       .filter((msg) => msg.content.trim() !== "") // Filter out any empty messages
 
     // Use the chatbot behavior utility with conversation history
-    await sendChatMessage(userInput, GEMINI_API_KEY, {
-      onChunk: (chunk, accumulated) => {
-        // Update the last message (assistant message) with accumulated content
-        setMessages((prev) => {
-          const updated = [...prev]
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content: accumulated,
-          }
-          return updated
-        })
-      },
-      onComplete: (content) => {
-        setMessages((prev) => {
-          const updated = [...prev]
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content,
-          }
-          return updated
-        })
-        setIsLoading(false)
-      },
-      onError: (error) => {
-        setMessages((prev) => {
-          const updated = [...prev]
-          updated[updated.length - 1] = {
-            role: "assistant",
-            content: error,
-          }
-          return updated
-        })
-        setIsLoading(false)
-      },
-    }, conversationHistory)
+    try {
+      await sendChatMessage(userInput, {
+        onChunk: (chunk, accumulated) => {
+          // Update the last message (assistant message) with accumulated content
+          setMessages((prev) => {
+            const updated = [...prev]
+            updated[updated.length - 1] = {
+              role: "assistant",
+              content: accumulated,
+            }
+            return updated
+          })
+        },
+        onComplete: (content) => {
+          setMessages((prev) => {
+            const updated = [...prev]
+            updated[updated.length - 1] = {
+              role: "assistant",
+              content,
+            }
+            return updated
+          })
+          setIsLoading(false)
+        },
+        onError: (error) => {
+          setMessages((prev) => {
+            const updated = [...prev]
+            updated[updated.length - 1] = {
+              role: "assistant",
+              content: error,
+            }
+            return updated
+          })
+          setIsLoading(false)
+        },
+      }, conversationHistory)
+    } catch (error: any) {
+      // Catch any unhandled errors to prevent Next.js error overlay
+      console.error("Chat error:", error)
+      setMessages((prev) => {
+        const updated = [...prev]
+        updated[updated.length - 1] = {
+          role: "assistant",
+          content: "**Error**: An unexpected error occurred. Please try again.",
+        }
+        return updated
+      })
+      setIsLoading(false)
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
