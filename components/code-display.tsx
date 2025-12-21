@@ -21,7 +21,7 @@ export function CodeDisplay() {
           </div>
           <div className="ml-8 text-primary">
             {`<div>`}
-            <span className="text-white">Software Engineer</span>
+            <span className="text-white">Full-Stack Software Engineer</span>
             {`</div>`}
           </div>
           <div className="ml-4">{`)`}</div>

@@ -17,11 +17,11 @@ export function ContactSection() {
               Let's Connect
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+          <p className="text-lg  mb-8 leading-relaxed">
             I'm always excited to collaborate on innovative projects or discuss
             new opportunities. Reach out through any of my social channels!
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm">
             Connect with me on social media or explore more of my work above
           </p>
         </div>

@@ -48,7 +48,7 @@ export function HeroSection() {
                 </span>
               </h1>
 
-              <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
+              <p className="text-lg  max-w-xl leading-relaxed">
                 {heroData.description.text}
               </p>
             </div>
@@ -72,7 +72,7 @@ export function HeroSection() {
                         {achievement.title}
                       </p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1 text-left">
+                    <p className="text-xs mt-1 text-left">
                       {achievement.subtitle}
                     </p>
                   </div>

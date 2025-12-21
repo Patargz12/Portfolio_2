@@ -4,30 +4,17 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { AnimatedBackground } from "@/components/animated-background"
+import { ChatWidget } from "@/components/chat-component"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Full-Stack Developer | MERN Portfolio",
+  title: "Patrick Arganza | Full-Stack Developer",
   description:
-    "Full-stack web developer specializing in React, Node.js, MongoDB, and Express. Building scalable web applications.",
-  generator: "v0.app",
+    "Full-stack Software Engineer specializing in React, Next, Node.js, MongoDB, and Express. Building scalable web applications.",
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
+    icon: "/Portfolio_Icon.ico",
     apple: "/apple-icon.png",
   },
 }
@@ -42,6 +29,7 @@ export default function RootLayout({
       <body className={`font-sans antialiased relative`}>
         <AnimatedBackground />
         <div className="relative z-10">{children}</div>
+        <ChatWidget />
         <Analytics />
       </body>
     </html>

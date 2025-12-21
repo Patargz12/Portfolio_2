@@ -11,10 +11,10 @@ export const overviewData = {
     mainSection: {
         image: "/about/profile_img.jpg",
         imageAlt: "Patrick Arganza",
-        title: "Software Engineer",
-        subtitle: "Full-Stack Developer | Software Engineer",
+        title: "Patrick Arganza",
+        subtitle: "Full-Stack Software Engineer",
         description:
-            "Proficient in modern JavaScript frameworks and libraries including React, Node.js, and Express. Experienced in building scalable full-stack applications with clean, maintainable code and best practices.",
+            "Proficient in React, Node.js, and Express with hands-on experience building RAG systems, vector databases, and LLM integrations. Skilled in implementing secure payment processing with Stripe and deploying scalable, AI-enhanced applications. <br /><br /> Lately, I've been diving deep into AI automation—building and deploying autonomous agents that handle complex workflows end-to-end. Orchestrating multi-model systems with Claude, Gemini, and specialized LLMs to create agents that reason, plan, and execute tasks. From engineering RAG pipelines with semantic search to designing agentic systems with tool-calling capabilities and persistent memory, I'm exploring how intelligent agents can transform traditional applications into adaptive, self-improving platforms.",
     },
     achievements: [
         {

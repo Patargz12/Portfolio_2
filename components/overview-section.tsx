@@ -28,7 +28,7 @@ export function OverviewSection() {
                 {overviewData.header.highlightedWord}
               </span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg  max-w-2xl mx-auto">
               {overviewData.header.subtitle}
             </p>
           </div>
@@ -63,9 +63,11 @@ export function OverviewSection() {
                       {overviewData.mainSection.subtitle}
                     </p>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {overviewData.mainSection.description}
-                  </p>
+                  <div className="text-sm leading-relaxed space-y-4">
+                    {overviewData.mainSection.description.split('<br /><br />').map((paragraph, index) => (
+                      <p key={index}>{paragraph.trim()}</p>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -103,7 +105,7 @@ export function OverviewSection() {
                           {achievement.subtitle}
                         </p>
                       </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm leading-relaxed">
                         {achievement.description}
                       </p>
                     </div>

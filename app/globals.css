@@ -223,3 +223,33 @@
   filter: brightness(1.1);
   transform: scale(1.02);
 }
+
+/* Custom scrollbar styling */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: oklch(0.6 0.2 280 / 0.3);
+  border-radius: 3px;
+}
+
+.scrollbar-thin:hover::-webkit-scrollbar-thumb {
+  background: oklch(0.6 0.2 280 / 0.5);
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-primary\/30::-webkit-scrollbar-thumb {
+  background: oklch(0.6 0.2 280 / 0.3);
+}
+
+.hover\:scrollbar-thumb-primary\/50:hover::-webkit-scrollbar-thumb {
+  background: oklch(0.6 0.2 280 / 0.5);
+}

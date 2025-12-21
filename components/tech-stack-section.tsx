@@ -23,7 +23,7 @@ export function TechStackSection() {
               {techStackData.header.highlightedWord}
             </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg  max-w-2xl mx-auto">
             {techStackData.header.subtitle}
           </p>
         </div>

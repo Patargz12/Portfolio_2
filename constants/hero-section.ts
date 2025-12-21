@@ -7,7 +7,7 @@ export const heroData = {
         highlighted: "Patrick",
     },
     description: {
-        text: "Crafting full-stack web applications with the MERN stack. I specialize in building scalable, performant, and user-centric solutions that solve real-world problems.",
+        text: "Building full-stack web applications and AI-powered automations with the MERN stack. I create intelligent solutions using RAG systems, LLMs, and modern web technologies to solve real-world problems at scale.",
     },
     achievements: [
         {
@@ -44,8 +44,8 @@ export const heroData = {
     ],
     floatingCards: [
         {
-            title: "MERN Stack",
-            description: "Full-stack web development",
+            title: "Frontend Development",
+            description: "TypeScript & Next.js",
             colorScheme: "primary",
             position: {
                 className: "top-[-24px] right-0",
@@ -54,7 +54,7 @@ export const heroData = {
         },
         {
             title: "API Development",
-            description: "RESTful & Express",
+            description: "Node & Express",
             colorScheme: "accent",
             position: {
                 className: "top-[-24px] left-0",
@@ -62,7 +62,7 @@ export const heroData = {
             delay: 0.2,
         },
         {
-            title: "Database Design",
+            title: "Databases",
             description: "MongoDB, Supabase",
             colorScheme: "secondary",
             position: {

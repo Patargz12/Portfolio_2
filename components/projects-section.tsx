@@ -132,7 +132,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
             {project.title}
           </motion.h3>
 
-          <p className="text-muted-foreground leading-relaxed line-clamp-3">
+          <p className=" leading-relaxed line-clamp-3">
             {project.description}
           </p>
 
@@ -257,7 +257,7 @@ export const Projects = ({
             </span>
           </motion.h2>
           <motion.p
-            className="text-lg text-muted-foreground max-w-2xl mx-auto"
+            className="text-lg  max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -292,31 +292,6 @@ export const Projects = ({
                 {category}
               </motion.button>
             ))}
-          </div>
-
-          <div className="flex gap-2 bg-secondary/50 p-1 rounded-lg">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setViewMode("grid")}
-              className={`${
-                viewMode === "grid" ? "bg-primary text-primary-foreground" : ""
-              }`}
-            >
-              <LayoutGrid className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setViewMode("masonry")}
-              className={`${
-                viewMode === "masonry"
-                  ? "bg-primary text-primary-foreground"
-                  : ""
-              }`}
-            >
-              <Grid3x3 className="h-5 w-5" />
-            </Button>
           </div>
         </motion.div>
 
@@ -423,7 +398,7 @@ export const Projects = ({
 
         {/* Page indicator with animation */}
         <motion.div
-          className="text-center mt-6 text-muted-foreground"
+          className="text-center mt-6 "
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}

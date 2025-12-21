@@ -9,12 +9,12 @@ export function WorkExperienceTimeline() {
     content: (
       <div>
         <p className="text-white font-semibold text-lg mb-2">{experience.company}</p>
-        <p className="text-muted-foreground text-sm mb-4">{experience.period}</p>
+        <p className="text-sm mb-4">{experience.period}</p>
         <ul className="space-y-2">
           {experience.responsibilities.map((responsibility, index) => (
             <li key={index} className="flex items-start gap-3">
               <span className="text-accent flex-shrink-0">•</span>
-              <span className="text-muted-foreground text-sm">{responsibility}</span>
+              <span className=" text-sm">{responsibility}</span>
             </li>
           ))}
         </ul>
