@@ -10,8 +10,31 @@ export interface ChatMessage {
   content: string
 }
 
+// Token management configuration
+const TOKEN_CONFIG = {
+  MAX_CONVERSATION_TOKENS: 8000, // Maximum tokens for conversation history
+  MAX_TOTAL_TOKENS: 30000, // Maximum total tokens (context + history + response)
+  CHARS_PER_TOKEN: 4, // Rough estimation
+}
+
+/**
+ * Estimates token count for text
+ */
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / TOKEN_CONFIG.CHARS_PER_TOKEN)
+}
+
+/**
+ * Estimates total tokens for conversation history
+ */
+function estimateHistoryTokens(history: ChatMessage[]): number {
+  const totalChars = history.reduce((sum, msg) => sum + msg.content.length, 0)
+  return Math.ceil(totalChars / TOKEN_CONFIG.CHARS_PER_TOKEN)
+}
+
 // Cache the portfolio context to avoid rebuilding it on every request
 let cachedPortfolioContext: string | null = null
+let cachedContextTokens: number = 0
 
 /**
  * Builds comprehensive portfolio context for the LLM
@@ -89,7 +112,30 @@ ${achievementsList}
 - LinkedIn: ${heroData.socialLinks.find((s) => s.platform === "LinkedIn")?.url || "Not available"}
 - Instagram: ${heroData.socialLinks.find((s) => s.platform === "Instagram")?.url || "Not available"}
 
-## How to Respond
+## STRICT BOUNDARIES - VERY IMPORTANT
+You are ONLY here to discuss Patrick Arganza's portfolio, work experience, projects, skills, and professional background. You MUST refuse to answer questions that are not related to this portfolio.
+
+### Topics You SHOULD Answer:
+- Questions about Patrick's work experience, projects, skills, and achievements
+- Questions about the technologies Patrick has used
+- Questions about Patrick's education and background
+- Questions about how to contact Patrick or view his work
+- General career advice or discussion about the tech industry AS IT RELATES to Patrick's experience
+- Clarifications about anything on the portfolio
+
+### Topics You MUST REFUSE:
+- General knowledge questions (e.g., "What is React?", "How does Python work?")
+- Current events, news, or politics
+- Requests to write code, debug code, or solve programming problems
+- Personal advice unrelated to Patrick's career
+- Questions about other people, companies, or topics not related to this portfolio
+- Mathematical calculations, translations, or general assistant tasks
+- Any topic that doesn't directly relate to Patrick Arganza's professional portfolio
+
+### When Asked Off-Topic Questions, Respond With:
+"I appreciate your question, but I'm specifically here to discuss Patrick Arganza's portfolio, work experience, and projects. I'd be happy to answer any questions about Patrick's skills, experience, or the projects he's worked on! Feel free to ask about his background in full-stack development, AI automation, or any of his featured projects."
+
+## How to Respond (for On-Topic Questions)
 - You ARE Patrick Arganza - speak in first person (I, me, my) not third person (he, his, Patrick's)
 - Be authentic, friendly, and conversational - like you're talking to someone at a networking event
 - Share your experiences, projects, and skills as if they're your own (because they are!)
@@ -101,11 +147,13 @@ ${achievementsList}
   
   // Cache the context for future use
   cachedPortfolioContext = contextString
+  cachedContextTokens = estimateTokens(contextString)
   return contextString
 }
 
 /**
  * Creates the request body for Gemini API with conversation history support
+ * Includes token management and validation
  */
 function createChatRequest(
   userMessage: string,
@@ -126,7 +174,19 @@ function createChatRequest(
     })
   } else {
     // Subsequent messages: include conversation history with proper roles
-    for (const msg of conversationHistory) {
+    // History is already pruned by client-side logic, but double-check token limits
+    const historyTokens = estimateHistoryTokens(conversationHistory)
+    
+    // If history is still too large (shouldn't happen with client-side pruning), further trim
+    let trimmedHistory = conversationHistory
+    if (historyTokens > TOKEN_CONFIG.MAX_CONVERSATION_TOKENS) {
+      // Keep only the most recent messages that fit within limit
+      while (trimmedHistory.length > 2 && estimateHistoryTokens(trimmedHistory) > TOKEN_CONFIG.MAX_CONVERSATION_TOKENS) {
+        trimmedHistory = trimmedHistory.slice(2) // Remove pairs
+      }
+    }
+    
+    for (const msg of trimmedHistory) {
       contents.push({
         role: msg.role === "user" ? "user" : "model",
         parts: [
@@ -165,49 +225,87 @@ function getErrorMessage(error: any, response?: Response): string {
   
   // Check for API key issues
   if (status === 401 || status === 403) {
-    return "**Authentication Error**: Invalid API key. Please check your Gemini API key configuration."
+    return "**Authentication Error**: Invalid API key. Please contact the site administrator."
   }
 
-  // Check for quota/token issues
+  // Check for quota/rate limit issues
   if (status === 429) {
-    return "**Rate Limit Exceeded**: Too many requests. Please try again later."
+    const errorMsg = error?.message?.toLowerCase() || ""
+    
+    // Check if it's a quota exhaustion vs rate limit
+    if (errorMsg.includes("quota") || errorMsg.includes("insufficient")) {
+      return "**API Quota Exceeded**: The chatbot has reached its daily usage limit. Please try again later or contact Patrick directly via email or LinkedIn."
+    }
+    
+    return "**Rate Limit**: Too many messages sent too quickly. Please wait a moment and try again."
   }
 
   // Check for model availability
   if (status === 404) {
-    return "**Model Not Found**: The chat model may have expired or is unavailable. Please check the model name."
+    return "**Service Unavailable**: The chat service is currently unavailable. Please try again later."
   }
 
-  // Check for API errors
+  // Check for API errors with detailed messages
   if (status === 400) {
-    return "**Bad Request**: Invalid request format. Please try again."
+    const errorMsg = error?.message || ""
+    
+    // Check for specific error types in the message
+    if (errorMsg.includes("token") || errorMsg.includes("length") || errorMsg.includes("too long")) {
+      return "**Message Too Long**: Your message or conversation history is too long. Please try a shorter message or refresh the chat to start over."
+    }
+    
+    if (errorMsg.includes("invalid") && errorMsg.includes("content")) {
+      return "**Invalid Content**: Your message contains unsupported content. Please try rephrasing your question."
+    }
+    
+    if (errorMsg.includes("safety") || errorMsg.includes("blocked")) {
+      return "**Content Blocked**: Your message was blocked by safety filters. Please rephrase your question."
+    }
+    
+    return "**Invalid Request**: There was an issue with your message. Please try again with a different question."
   }
 
   // Check for server errors
   if (status && status >= 500) {
-    return "**Server Error**: The API service is temporarily unavailable. Please try again later."
+    return "**Server Error**: The chat service is temporarily unavailable. Please try again in a few moments."
   }
 
   // Check for network errors
   if (error instanceof TypeError && error.message.includes("fetch")) {
-    return "**Network Error**: Unable to connect to the API. Please check your internet connection."
+    return "**Network Error**: Unable to connect to the chat service. Please check your internet connection and try again."
   }
 
   // Check for specific error messages from API response
   if (error?.message) {
-    if (error.message.includes("API key") || error.message.includes("authentication")) {
-      return "**Authentication Error**: Invalid or missing API key."
+    const errorMsg = error.message.toLowerCase()
+    
+    if (errorMsg.includes("api key") || errorMsg.includes("authentication")) {
+      return "**Authentication Error**: Service authentication failed. Please contact the site administrator."
     }
-    if (error.message.includes("quota") || error.message.includes("limit")) {
-      return "**Quota Exceeded**: No tokens available. Please check your API quota."
+    
+    if (errorMsg.includes("quota") || errorMsg.includes("insufficient")) {
+      return "**API Quota Exceeded**: The chatbot has reached its usage limit. Please try again later or contact Patrick directly."
     }
-    if (error.message.includes("model")) {
-      return "**Model Error**: Chat model expired or unavailable."
+    
+    if (errorMsg.includes("rate limit") || errorMsg.includes("too many requests")) {
+      return "**Rate Limit**: Too many requests. Please wait a moment before sending another message."
+    }
+    
+    if (errorMsg.includes("model")) {
+      return "**Service Error**: The chat model is temporarily unavailable. Please try again later."
+    }
+    
+    if (errorMsg.includes("timeout")) {
+      return "**Timeout Error**: The request took too long. Please try again with a shorter message."
+    }
+    
+    if (errorMsg.includes("network") || errorMsg.includes("connection")) {
+      return "**Connection Error**: Unable to reach the chat service. Please check your connection and try again."
     }
   }
 
-  // Generic error
-  return "**Error**: An unexpected error occurred. Please try again."
+  // Generic error with suggestion
+  return "**Unexpected Error**: Something went wrong. Please refresh the page and try again. If the problem persists, feel free to contact Patrick directly via email or LinkedIn."
 }
 
 export async function POST(request: NextRequest) {
@@ -256,22 +354,26 @@ export async function POST(request: NextRequest) {
       )
 
       if (!response.ok) {
-        // For auth errors, don't try fallback
-        if (response.status === 401 || response.status === 403) {
-          let errorData
-          try {
-            errorData = await response.json()
-          } catch {
-            errorData = null
-          }
-          const errorMessage = getErrorMessage(
-            new Error(errorData?.error?.message || `HTTP error! status: ${response.status}`),
-            response
-          )
+        // Parse error response for detailed error message
+        let errorData
+        try {
+          errorData = await response.json()
+        } catch {
+          errorData = null
+        }
+        
+        // Extract detailed error information
+        const errorDetails = errorData?.error?.message || errorData?.message || `HTTP error! status: ${response.status}`
+        const error = new Error(errorDetails)
+        
+        // For critical errors (auth, rate limit, quota), return immediately
+        if (response.status === 401 || response.status === 403 || response.status === 429) {
+          const errorMessage = getErrorMessage(error, response)
           return Response.json({ error: errorMessage }, { status: response.status })
         }
-        // For other errors, mark as failed to trigger fallback
-        throw new Error("Streaming request failed")
+        
+        // For other errors, try to get detailed message and attempt fallback
+        throw new Error(errorDetails)
       }
 
       // Create a streaming response
@@ -294,41 +396,47 @@ export async function POST(request: NextRequest) {
               if (done) break
 
               buffer += decoder.decode(value, { stream: true })
-              const lines = buffer.split("\n")
-              
-              // Keep the last incomplete line in the buffer
-              buffer = lines.pop() || ""
+            }
 
-              for (const line of lines) {
-                const trimmedLine = line.trim()
-                if (!trimmedLine) continue
+            // Parse the complete response (Gemini returns a JSON array)
+            try {
+              // Remove any leading/trailing whitespace and check if it's an array
+              const trimmedBuffer = buffer.trim()
+              
+              let responseData
+              if (trimmedBuffer.startsWith("[")) {
+                // It's an array of chunks
+                responseData = JSON.parse(trimmedBuffer)
                 
-                // Skip SSE format prefixes if present
-                let jsonStr = trimmedLine
-                if (trimmedLine.startsWith("data: ")) {
-                  jsonStr = trimmedLine.slice(6)
-                }
-                if (jsonStr.trim() === "[DONE]" || jsonStr.trim() === "") continue
-                
-                try {
-                  const data = JSON.parse(jsonStr)
-                  
-                  // Handle error in stream
-                  if (data.error) {
-                    const errorMessage = getErrorMessage(
-                      new Error(data.error.message || "API error occurred"),
-                      response
-                    )
+                // Process each chunk in the array
+                for (const chunk of responseData) {
+                  if (chunk.error) {
+                    const error = new Error(chunk.error.message || "API error occurred")
+                    const errorMessage = getErrorMessage(error)
                     controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
                     controller.close()
                     return
                   }
                   
-                  // Extract text from different possible response structures
+                  // Check for blocked content or safety issues
+                  if (chunk.candidates?.[0]?.finishReason === "SAFETY") {
+                    const errorMessage = "**Content Blocked**: Your message was blocked by safety filters. Please rephrase your question."
+                    controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
+                    controller.close()
+                    return
+                  }
+                  
+                  if (chunk.candidates?.[0]?.finishReason === "RECITATION") {
+                    const errorMessage = "**Content Blocked**: Response was blocked due to content policy. Please try a different question."
+                    controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
+                    controller.close()
+                    return
+                  }
+                  
                   const textChunk = 
-                    data.candidates?.[0]?.content?.parts?.[0]?.text ||
-                    data.candidates?.[0]?.delta?.text ||
-                    data.text ||
+                    chunk.candidates?.[0]?.content?.parts?.[0]?.text ||
+                    chunk.candidates?.[0]?.delta?.text ||
+                    chunk.text ||
                     ""
                   
                   if (textChunk) {
@@ -338,44 +446,46 @@ export async function POST(request: NextRequest) {
                       new TextEncoder().encode(`data: ${JSON.stringify({ chunk: textChunk, accumulated: accumulatedContent })}\n\n`)
                     )
                   }
-                } catch (e) {
-                  // If it's a JSON parse error, skip this line
-                  // If it's an API error, handle it
-                  if (e instanceof Error && e.message.includes("API error")) {
-                    const errorMessage = getErrorMessage(e, response)
-                    controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
-                    controller.close()
-                    return
-                  }
-                  continue
+                }
+              } else {
+                // Single object response
+                responseData = JSON.parse(trimmedBuffer)
+                
+                if (responseData.error) {
+                  const error = new Error(responseData.error.message || "API error occurred")
+                  const errorMessage = getErrorMessage(error)
+                  controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
+                  controller.close()
+                  return
+                }
+                
+                // Check for blocked content
+                if (responseData.candidates?.[0]?.finishReason === "SAFETY" || responseData.candidates?.[0]?.finishReason === "RECITATION") {
+                  const errorMessage = "**Content Blocked**: The response was blocked by safety filters. Please try a different question."
+                  controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
+                  controller.close()
+                  return
+                }
+                
+                const textChunk = 
+                  responseData.candidates?.[0]?.content?.parts?.[0]?.text ||
+                  responseData.candidates?.[0]?.delta?.text ||
+                  responseData.text ||
+                  ""
+                
+                if (textChunk) {
+                  accumulatedContent = textChunk
+                  controller.enqueue(
+                    new TextEncoder().encode(`data: ${JSON.stringify({ chunk: textChunk, accumulated: accumulatedContent })}\n\n`)
+                  )
                 }
               }
-            }
-
-            // Process any remaining buffer content
-            if (buffer.trim()) {
-              try {
-                let jsonStr = buffer.trim()
-                if (jsonStr.startsWith("data: ")) {
-                  jsonStr = jsonStr.slice(6)
-                }
-                if (jsonStr && jsonStr !== "[DONE]") {
-                  const data = JSON.parse(jsonStr)
-                  const textChunk = 
-                    data.candidates?.[0]?.content?.parts?.[0]?.text ||
-                    data.candidates?.[0]?.delta?.text ||
-                    data.text ||
-                    ""
-                  if (textChunk) {
-                    accumulatedContent += textChunk
-                    controller.enqueue(
-                      new TextEncoder().encode(`data: ${JSON.stringify({ chunk: textChunk, accumulated: accumulatedContent })}\n\n`)
-                    )
-                  }
-                }
-              } catch (e) {
-                // Ignore parsing errors for remaining buffer
-              }
+            } catch (parseError: any) {
+              // Handle parse errors with detailed message
+              const errorMessage = getErrorMessage(parseError)
+              controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`))
+              controller.close()
+              return
             }
 
             // Send completion
@@ -400,8 +510,6 @@ export async function POST(request: NextRequest) {
       })
     } catch (streamError: any) {
       // Fallback to non-streaming
-      console.warn("Streaming failed, falling back to non-streaming:", streamError)
-      
       try {
         const fallbackResponse = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
@@ -421,30 +529,40 @@ export async function POST(request: NextRequest) {
           } catch {
             errorData = null
           }
-          const errorMessage = getErrorMessage(
-            new Error(errorData?.error?.message || `HTTP error! status: ${fallbackResponse.status}`),
-            fallbackResponse
-          )
+          const errorDetails = errorData?.error?.message || errorData?.message || `HTTP error! status: ${fallbackResponse.status}`
+          const error = new Error(errorDetails)
+          const errorMessage = getErrorMessage(error, fallbackResponse)
           return Response.json({ error: errorMessage }, { status: fallbackResponse.status })
         }
 
         const data = await fallbackResponse.json()
+        
+        // Check for errors or blocked content in response
+        if (data.error) {
+          const error = new Error(data.error.message || "API error occurred")
+          const errorMessage = getErrorMessage(error)
+          return Response.json({ error: errorMessage }, { status: 500 })
+        }
+        
+        // Check for blocked content
+        if (data.candidates?.[0]?.finishReason === "SAFETY" || data.candidates?.[0]?.finishReason === "RECITATION") {
+          return Response.json({ 
+            error: "**Content Blocked**: The response was blocked by safety filters. Please try a different question." 
+          }, { status: 400 })
+        }
+        
         const content = data.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "I apologize, but I'm having trouble connecting right now. Please try again later."
+          "I apologize, but I'm having trouble responding right now. Please try again or contact Patrick directly."
 
         return Response.json({ content })
       } catch (fallbackError: any) {
-        console.error("Fallback error:", fallbackError)
         const errorMessage = getErrorMessage(fallbackError)
         return Response.json({ error: errorMessage }, { status: 500 })
       }
     }
   } catch (error: any) {
-    console.error("API route error:", error)
-    return Response.json(
-      { error: "**Error**: An unexpected error occurred. Please try again." },
-      { status: 500 }
-    )
+    const errorMessage = getErrorMessage(error)
+    return Response.json({ error: errorMessage }, { status: 500 })
   }
 }
 

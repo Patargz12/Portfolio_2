@@ -9,57 +9,113 @@ export interface ChatCallbacks {
   onError: (error: string) => void
 }
 
+// Configuration for conversation management
+export const CHAT_CONFIG = {
+  MAX_HISTORY_MESSAGES: 12, // Keep last 12 messages (6 pairs of user/assistant)
+  MAX_ESTIMATED_TOKENS: 8000, // Conservative limit for conversation history
+  CHARS_PER_TOKEN: 4, // Rough estimation: 1 token ≈ 4 characters
+}
+
 /**
- * Formats error messages for different error types
+ * Estimates token count for a message or array of messages
+ * Uses rough estimation: 1 token ≈ 4 characters
+ */
+export function estimateTokens(content: string | ChatMessage[]): number {
+  if (typeof content === "string") {
+    return Math.ceil(content.length / CHAT_CONFIG.CHARS_PER_TOKEN)
+  }
+  
+  const totalChars = content.reduce((sum, msg) => sum + msg.content.length, 0)
+  return Math.ceil(totalChars / CHAT_CONFIG.CHARS_PER_TOKEN)
+}
+
+/**
+ * Prunes conversation history using sliding window approach
+ * Keeps most recent messages within token limits
+ */
+export function pruneConversationHistory(history: ChatMessage[]): ChatMessage[] {
+  if (history.length === 0) return history
+  
+  // First, limit by message count
+  let pruned = history.slice(-CHAT_CONFIG.MAX_HISTORY_MESSAGES)
+  
+  // Then, check token count and further prune if needed
+  let estimatedTokens = estimateTokens(pruned)
+  
+  // If still too large, keep removing oldest messages in pairs
+  while (estimatedTokens > CHAT_CONFIG.MAX_ESTIMATED_TOKENS && pruned.length > 2) {
+    // Remove 2 messages at a time (1 user + 1 assistant pair)
+    pruned = pruned.slice(2)
+    estimatedTokens = estimateTokens(pruned)
+  }
+  
+  return pruned
+}
+
+/**
+ * Formats error messages for different error types (client-side)
  */
 function getErrorMessage(error: any, response?: Response): string {
   const status = response?.status
   
+  // If the error message is already formatted (starts with **), pass it through
+  if (error?.message && error.message.startsWith("**")) {
+    return error.message
+  }
+  
   // Check for API key issues
   if (status === 401 || status === 403) {
-    return "**Authentication Error**: Invalid API key. Please check your Gemini API key configuration."
+    return "**Authentication Error**: Service authentication failed. Please contact the site administrator."
   }
 
-  // Check for quota/token issues
+  // Check for quota/rate limit issues
   if (status === 429) {
-    return "**Rate Limit Exceeded**: Too many requests. Please try again later."
+    return "**Rate Limit**: Too many messages sent. Please wait a moment and try again."
   }
 
   // Check for model availability
   if (status === 404) {
-    return "**Model Not Found**: The chat model may have expired or is unavailable. Please check the model name."
+    return "**Service Unavailable**: The chat service is currently unavailable. Please try again later."
   }
 
   // Check for API errors
   if (status === 400) {
-    return "**Bad Request**: Invalid request format. Please try again."
+    return "**Invalid Request**: There was an issue with your message. Please try again."
   }
 
   // Check for server errors
   if (status && status >= 500) {
-    return "**Server Error**: The API service is temporarily unavailable. Please try again later."
+    return "**Server Error**: The chat service is temporarily unavailable. Please try again in a few moments."
   }
 
   // Check for network errors
   if (error instanceof TypeError && error.message.includes("fetch")) {
-    return "**Network Error**: Unable to connect to the API. Please check your internet connection."
+    return "**Network Error**: Unable to connect to the chat service. Please check your internet connection."
   }
 
   // Check for specific error messages from API response
   if (error?.message) {
-    if (error.message.includes("API key") || error.message.includes("authentication")) {
-      return "**Authentication Error**: Invalid or missing API key."
+    const errorMsg = error.message.toLowerCase()
+    
+    if (errorMsg.includes("quota") || errorMsg.includes("insufficient")) {
+      return "**API Quota Exceeded**: The chatbot has reached its usage limit. Please try again later or contact Patrick directly."
     }
-    if (error.message.includes("quota") || error.message.includes("limit")) {
-      return "**Quota Exceeded**: No tokens available. Please check your API quota."
+    
+    if (errorMsg.includes("rate limit") || errorMsg.includes("too many")) {
+      return "**Rate Limit**: Too many requests. Please wait before sending another message."
     }
-    if (error.message.includes("model")) {
-      return "**Model Error**: Chat model expired or unavailable."
+    
+    if (errorMsg.includes("timeout")) {
+      return "**Timeout**: The request took too long. Please try a shorter message."
+    }
+    
+    if (errorMsg.includes("network") || errorMsg.includes("connection")) {
+      return "**Connection Error**: Unable to reach the chat service. Please check your connection."
     }
   }
 
-  // Generic error
-  return "**Error**: An unexpected error occurred. Please try again."
+  // Generic error with helpful suggestion
+  return "**Unexpected Error**: Something went wrong. Please refresh the page and try again. If the issue persists, contact Patrick directly via email or LinkedIn."
 }
 
 /**
@@ -128,7 +184,9 @@ async function streamChatResponse(
           
           // Handle error in stream
           if (data.error) {
-            throw new Error(data.error)
+            // Pass through the formatted error from the server
+            callbacks.onError(data.error)
+            return { success: true } // Mark as success to avoid fallback
           }
           
           // Handle completion
@@ -188,6 +246,11 @@ async function streamChatResponse(
 
     return { success: false }
   } catch (error: any) {
+    // If there's a specific error, report it
+    if (error?.message) {
+      callbacks.onError(getErrorMessage(error))
+      return { success: true } // Mark as success to avoid fallback after reporting error
+    }
     // Return failure for errors to trigger fallback
     return { success: false }
   }
@@ -222,7 +285,13 @@ async function getChatResponse(
   }
 
   const data = await response.json()
-  return data.content || "I apologize, but I'm having trouble connecting right now. Please try again later."
+  
+  // Check if there's an error in the response
+  if (data.error) {
+    throw new Error(data.error)
+  }
+  
+  return data.content || "I apologize, but I'm having trouble responding right now. Please try again or contact Patrick directly."
 }
 
 /**
@@ -236,9 +305,12 @@ export async function sendChatMessage(
   callbacks: ChatCallbacks,
   conversationHistory: ChatMessage[] = []
 ): Promise<void> {
+  // Apply sliding window to prune conversation history
+  const prunedHistory = pruneConversationHistory(conversationHistory)
+  
   // Try streaming first
   try {
-    const streamResult = await streamChatResponse(userMessage, conversationHistory, callbacks)
+    const streamResult = await streamChatResponse(userMessage, prunedHistory, callbacks)
     
     if (streamResult.success) {
       return
@@ -249,11 +321,9 @@ export async function sendChatMessage(
 
   // Fallback to non-streaming
   try {
-    console.warn("Using non-streaming fallback...")
-    const content = await getChatResponse(userMessage, conversationHistory)
+    const content = await getChatResponse(userMessage, prunedHistory)
     callbacks.onComplete(content)
   } catch (fallbackError: any) {
-    console.error("Fallback error:", fallbackError)
     const errorMessage = getErrorMessage(fallbackError)
     callbacks.onError(errorMessage)
   }

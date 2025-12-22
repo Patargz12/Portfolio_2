@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { MessageCircle, X, Send, User } from "lucide-react"
 import { Streamdown } from "streamdown"
-import { sendChatMessage, type ChatMessage } from "@/utils/chatbot-behavior"
+import { sendChatMessage, estimateTokens, type ChatMessage } from "@/utils/chatbot-behavior"
 
 
 export function ChatWidget() {
@@ -19,6 +19,7 @@ export function ChatWidget() {
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [estimatedTokens, setEstimatedTokens] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -28,6 +29,12 @@ export function ChatWidget() {
 
   useEffect(() => {
     scrollToBottom()
+    
+    // Update token estimate whenever messages change
+    // Only count messages after the initial greeting
+    const conversationMessages = messages.slice(1)
+    const tokens = estimateTokens(conversationMessages)
+    setEstimatedTokens(tokens)
   }, [messages])
 
   const handleSend = async () => {
@@ -35,6 +42,7 @@ export function ChatWidget() {
 
     const userInput = input.trim()
     const userMessage: ChatMessage = { role: "user", content: userInput }
+    
     setMessages((prev) => [...prev, userMessage])
     setInput("")
     setIsLoading(true)
@@ -50,15 +58,15 @@ export function ChatWidget() {
       { role: "assistant", content: "" },
     ])
 
-    // Build conversation history (exclude the initial greeting and the current messages we just added)
-    // We want to send all previous user/assistant pairs, but not the initial greeting or current messages
-    // Note: messages now includes the userMessage we just added, so we need to exclude it
+    // Build conversation history with sliding window approach
+    // Skip the initial greeting (index 0) and filter out empty messages
+    // The pruning/sliding window logic is handled in chatbot-behavior.ts
     const conversationHistory: ChatMessage[] = messages
       .slice(1) // Skip the initial greeting message
-      .slice(0, -2) // Exclude the last 2 messages (user message and empty assistant placeholder we just added)
       .filter((msg) => msg.content.trim() !== "") // Filter out any empty messages
 
     // Use the chatbot behavior utility with conversation history
+    // The sendChatMessage function will automatically prune the history
     try {
       await sendChatMessage(userInput, {
         onChunk: (chunk, accumulated) => {
@@ -164,10 +172,16 @@ export function ChatWidget() {
                 </div>
                 <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-card" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="font-semibold text-foreground">Patrick Arganza</h3>
                 <p className="text-xs text-muted-foreground">Online</p>
               </div>
+              {/* Token usage indicator - only show if conversation is getting long */}
+              {estimatedTokens > 4000 && (
+                <div className="text-xs text-muted-foreground/70" title={`Estimated ${estimatedTokens.toLocaleString()} tokens used`}>
+                  {estimatedTokens > 6000 ? "🔴" : "🟡"} {(estimatedTokens / 1000).toFixed(1)}k
+                </div>
+              )}
             </div>
             <button
               onClick={() => setIsOpen(false)}
