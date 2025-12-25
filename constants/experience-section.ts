@@ -31,7 +31,7 @@ export const experienceData = {
             company: "Rivan Cyber Training Institute",
             period: "Jan 2024 - April 2024",
             responsibilities: [
-                "Created a full-stack Laravel crash course",
+                "Teach Laravel Jetstream for restaurant management systems ",
                 "Configured virtual machines and Cisco devices",
                 "Automated several commands for certain routing protocols using Python",
                 "Handled domains, servers and websites",

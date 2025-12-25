@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { MessageCircle, X, Send, User } from "lucide-react"
-import { Streamdown } from "streamdown"
+import { StreamingTypewriter } from "@/components/streaming-typewriter"
 import { sendChatMessage, estimateTokens, type ChatMessage } from "@/utils/chatbot-behavior"
 
 
@@ -14,28 +14,40 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: "Hi! I'm Patrick Arganza. Feel free to ask me anything about my work, projects, or experience!",
+      content: "Hi! I'm Patrick Arganza. Feel free to ask me anything about his work, projects, or experience!",
     },
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [estimatedTokens, setEstimatedTokens] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
   useEffect(() => {
-    scrollToBottom()
-    
     // Update token estimate whenever messages change
-    // Only count messages after the initial greeting
     const conversationMessages = messages.slice(1)
     const tokens = estimateTokens(conversationMessages)
     setEstimatedTokens(tokens)
   }, [messages])
+
+  useEffect(() => {
+    // Auto-scroll to bottom when messages update (especially during streaming)
+    if (messagesContainerRef.current) {
+      const container = messagesContainerRef.current
+      
+      // Use requestAnimationFrame to ensure DOM has updated before scrolling
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Scroll to bottom - use instant scroll during streaming for better UX
+          container.scrollTo({
+            top: container.scrollHeight,
+            behavior: isLoading ? 'auto' : 'smooth'
+          })
+        })
+      })
+    }
+  }, [messages, isLoading])
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
@@ -192,7 +204,10 @@ export function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="h-[400px] overflow-y-auto p-4 space-y-4 bg-background/50 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50">
+          <div 
+            ref={messagesContainerRef}
+            className="h-[400px] overflow-y-auto p-4 space-y-4 bg-background/50 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50"
+          >
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -231,7 +246,10 @@ export function ChatWidget() {
                 >
                   {message.role === "assistant" ? (
                     message.content ? (
-                      <Streamdown>{message.content}</Streamdown>
+                      <StreamingTypewriter 
+                        content={message.content} 
+                        isStreaming={isLoading && index === messages.length - 1}
+                      />
                     ) : isLoading && index === messages.length - 1 ? (
                       <div className="flex gap-1">
                         <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.3s]" />

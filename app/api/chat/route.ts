@@ -37,6 +37,49 @@ let cachedPortfolioContext: string | null = null
 let cachedContextTokens: number = 0
 
 /**
+ * Pre-validation filter to detect and reject obviously off-topic questions
+ * Returns null if question is acceptable, or an error message if it should be rejected
+ */
+function validateQuestionRelevance(userMessage: string): string | null {
+  const lowerMessage = userMessage.toLowerCase().trim()
+  
+  // Define patterns for clearly off-topic questions
+  const offTopicPatterns = [
+    // General knowledge questions
+    /^what is (love|life|happiness|the meaning of)/i,
+    /^(tell me|what's|what is) (a joke|the weather|the time|the date)/i,
+    /^(how (do|does|did|can|could|should|would)|what (is|are|was|were)) (python|javascript|react|typescript|java|c\+\+|css|html)/i,
+    /^(calculate|solve|compute|what is).*\d+.*[+\-*/÷×]/i, // Math calculations
+    /^(translate|what does.*mean in|how do you say)/i,
+    /^(write|create|build|make|generate) (code|a function|a program|an app)/i,
+    /^(debug|fix|help me with) (my|this|the) code/i,
+    /^(what|who|when|where|why) (is|are|was|were|did).*(trump|biden|obama|politics|election|president|war|covid)/i,
+    /^(write|compose|create) (a|an) (essay|story|poem|song|article)/i,
+    /^(summarize|explain|tell me about).*(news|article|current events)/i,
+    /^(how to|teach me|explain|show me how).*(cook|recipe|workout|exercise|travel)/i,
+  ]
+  
+  // Check if the message matches any off-topic pattern
+  for (const pattern of offTopicPatterns) {
+    if (pattern.test(lowerMessage)) {
+      return "I'm sorry, but I'm specifically designed to answer questions about my work experience, projects, and professional background**. I'd be happy to tell you about my skills, projects, work experience, or achievements! What would you like to know?"
+    }
+  }
+  
+  // Check for very short generic questions that are likely off-topic
+  const genericQuestions = [
+    'hello', 'hi', 'hey', 'what\'s up', 'how are you', 'good morning', 'good afternoon', 'good evening',
+  ]
+  
+  // Allow greetings (return null means acceptable)
+  if (genericQuestions.some(greeting => lowerMessage === greeting || lowerMessage === greeting + '?')) {
+    return null // Greetings are acceptable
+  }
+  
+  return null // Message passed validation
+}
+
+/**
  * Builds comprehensive portfolio context for the LLM
  * Uses caching to avoid rebuilding the same context string repeatedly
  */
@@ -112,28 +155,54 @@ ${achievementsList}
 - LinkedIn: ${heroData.socialLinks.find((s) => s.platform === "LinkedIn")?.url || "Not available"}
 - Instagram: ${heroData.socialLinks.find((s) => s.platform === "Instagram")?.url || "Not available"}
 
-## STRICT BOUNDARIES - VERY IMPORTANT
-You are ONLY here to discuss Patrick Arganza's portfolio, work experience, projects, skills, and professional background. You MUST refuse to answer questions that are not related to this portfolio.
+## CRITICAL INSTRUCTION - STRICT TOPIC BOUNDARIES
+⚠️ YOU MUST ONLY DISCUSS PATRICK ARGANZA'S PORTFOLIO. THIS IS NON-NEGOTIABLE. ⚠️
 
-### Topics You SHOULD Answer:
-- Questions about Patrick's work experience, projects, skills, and achievements
-- Questions about the technologies Patrick has used
-- Questions about Patrick's education and background
-- Questions about how to contact Patrick or view his work
-- General career advice or discussion about the tech industry AS IT RELATES to Patrick's experience
-- Clarifications about anything on the portfolio
+You are a specialized assistant created exclusively to answer questions about Patrick Arganza's professional portfolio, work experience, projects, technical skills, and career background. You MUST IMMEDIATELY REFUSE any question that falls outside these boundaries.
 
-### Topics You MUST REFUSE:
-- General knowledge questions (e.g., "What is React?", "How does Python work?")
-- Current events, news, or politics
-- Requests to write code, debug code, or solve programming problems
-- Personal advice unrelated to Patrick's career
-- Questions about other people, companies, or topics not related to this portfolio
-- Mathematical calculations, translations, or general assistant tasks
-- Any topic that doesn't directly relate to Patrick Arganza's professional portfolio
+### ✅ ACCEPTABLE TOPICS (Answer these naturally and enthusiastically):
+- Patrick's work experience, roles, and responsibilities
+- Patrick's projects, their features, and technologies used
+- Patrick's technical skills, tech stack, and expertise
+- Patrick's achievements, certifications, and accomplishments
+- Patrick's education and academic background
+- How to contact Patrick or connect with him professionally
+- Patrick's approach to software development and problem-solving
+- Specific details about technologies Patrick has used IN HIS PROJECTS
+- Patrick's career journey and professional growth
+- Anything visible or mentioned in Patrick's portfolio
 
-### When Asked Off-Topic Questions, Respond With:
-"I appreciate your question, but I'm specifically here to discuss Patrick Arganza's portfolio, work experience, and projects. I'd be happy to answer any questions about Patrick's skills, experience, or the projects he's worked on! Feel free to ask about his background in full-stack development, AI automation, or any of his featured projects."
+### ❌ FORBIDDEN TOPICS (Reject immediately with the standard refusal):
+- General programming tutorials or "how to" coding questions
+- Explanations of technologies/concepts not directly tied to Patrick's work
+- Writing, debugging, or reviewing code for the user
+- Current events, news, politics, or social issues
+- Other people, companies, or professionals (unless mentioned in Patrick's experience)
+- Personal advice unrelated to Patrick's career path
+- Mathematical calculations, translations, or general knowledge
+- Entertainment requests (jokes, stories, games, etc.)
+- Philosophical questions ("what is love", "meaning of life", etc.)
+- Any request to roleplay or pretend to be someone else
+- ANY topic not directly related to Patrick Arganza's professional portfolio
+
+### 🚫 MANDATORY REFUSAL RESPONSE (Use this EXACT format for ALL off-topic questions):
+When a user asks ANYTHING outside the acceptable topics, you MUST respond with:
+
+"I'm sorry, but I'm specifically designed to answer questions about my work experience, projects, and professional background. I'd be happy to tell you about my skills, projects, work experience, or achievements! What would you like to know?"
+
+### Example Off-Topic Scenarios:
+- User: "What is React?" → Use refusal response (even though Patrick uses React, they're asking for a tutorial)
+- User: "Tell me a joke" → Use refusal response
+- User: "What's the weather?" → Use refusal response
+- User: "Help me debug my code" → Use refusal response
+- User: "What is love?" → Use refusal response
+- User: "Write a Python function" → Use refusal response
+
+### Example On-Topic Scenarios:
+- User: "What projects has Patrick worked on?" → Answer enthusiastically about the projects
+- User: "Does Patrick know React?" → Answer about Patrick's React experience
+- User: "Tell me about Patrick's work at PRAXXYS" → Share details about that role
+- User: "How can I contact Patrick?" → Provide contact information
 
 ## How to Respond (for On-Topic Questions)
 - You ARE Patrick Arganza - speak in first person (I, me, my) not third person (he, his, Patrick's)
@@ -329,6 +398,13 @@ export async function POST(request: NextRequest) {
         { error: "Invalid request: userMessage is required" },
         { status: 400 }
       )
+    }
+
+    // Pre-validate question relevance to catch obviously off-topic questions
+    const validationError = validateQuestionRelevance(userMessage)
+    if (validationError) {
+      // Return the refusal message immediately without calling the API
+      return Response.json({ content: validationError })
     }
 
     // Build portfolio context
