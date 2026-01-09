@@ -22,7 +22,7 @@ export const overviewData = {
             imageAlt: "LeetCode Rank",
             popoverImage: "/about/leetcode_popover.jpg",
             title: "LeetCode Rank",
-            subtitle: "Top 5% in Leetcode",
+            subtitle: "Top 1% in Leetcode",
             description:
                 "Achieved a competitive ranking in the top 5% of LeetCode users through consistent problem-solving. Demonstrated strong algorithmic thinking, data structure expertise, and dedication to continuous improvement.",
             transitionDelay: "150ms",
