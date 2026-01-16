@@ -14,7 +14,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: "Hi! I'm Patrick Arganza. Feel free to ask me anything about his work, projects, or experience!",
+      content: "Hi! I'm Patrick Arganza. Feel free to ask me anything about my work, projects, or experience!",
     },
   ])
   const [input, setInput] = useState("")

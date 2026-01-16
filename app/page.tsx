@@ -5,6 +5,7 @@ import { OverviewSection } from "@/components/overview-section";
 import { TechStackSection } from "@/components/tech-stack-section";
 import { WorkExperienceTimeline } from "@/components/work-experience-timeline";
 import { Projects } from "@/components/projects-section";
+import { CertificationsSection } from "@/components/certifications-section";
 import { ContactSection } from "@/components/contact-section";
 import { AnimatedBackground } from "@/components/animated-background";
 import { FloatingNav } from "@/components/ui/floating-navbar";
@@ -54,6 +55,7 @@ export default function Home() {
       <TechStackSection />
       <WorkExperienceTimeline />
       <Projects />
+      <CertificationsSection />
       <ContactSection />
     </main>
   );
