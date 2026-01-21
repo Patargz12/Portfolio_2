@@ -118,7 +118,7 @@ export const CertificationsSection = ({
   certifications = certificationsData.certifications,
 }: CertificationsSectionProps) => {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 relative">
+    <section id="certificates" className="py-20 px-4 sm:px-6 lg:px-8 relative">
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

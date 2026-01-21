@@ -14,6 +14,7 @@ import {
   IconCode, 
   IconBriefcase, 
   IconFolders, 
+  IconCertificate,
   IconMail 
 } from "@tabler/icons-react";
 
@@ -38,6 +39,11 @@ export default function Home() {
       name: "Projects",
       link: "#projects",
       icon: <IconFolders className="h-4 w-4 text-neutral-500 dark:text-white" />,
+    },
+    {
+      name: "Certificates",
+      link: "#certificates",
+      icon: <IconCertificate className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {
       name: "Contact",

@@ -10,7 +10,7 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Patrick Arganza | Full-Stack Developer",
+  title: "Patrick Arganza | Full-Stack Software Engineer",
   description:
     "Full-stack Software Engineer specializing in React, Next, Node.js, MongoDB, and Express. Building scalable web applications.",
   icons: {
