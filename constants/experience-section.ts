@@ -5,12 +5,10 @@ export const experienceData = {
             company: "Media Meter Inc.",
             period: "Mar 2025 - Present",
             responsibilities: [
-                "Developed a Law Related Chatbot application",
-                "Developed an AI conversational website",
-                "Deploy applications using Kubernetes, Docker and AWS technologies",
-                "Built applications using existing NuxtJS boilerplates developed by senior engineers",
-                "Collaborated across teams to fulfill CEO expectations",
-                "Worked in Agile environment",
+                "Led frontend development of LexiBean, implementing conversational UI, natural language processing response rendering, and case search workflows for an AI-powered legal assistant.",
+                "Built core user interfaces for Scoup, including real-time content feeds, trend dashboards, and automated newsletter preview systems. ",
+                "Developed reusable React components and state management for a micro-frontendarchitecture in Salina, supporting video transcription, translation, websockets and AI chat interactions.",
+                "Worked within a Jira-based ticketing system and collaborated with cross-functional teams to deliver high-quality software solutions.",
             ],
         },
         {

@@ -212,7 +212,9 @@ When a user asks ANYTHING outside the acceptable topics, you MUST respond with:
 - When discussing projects, speak about them as your own work: "I built..." or "I developed..."
 - When discussing experience, reference your roles naturally: "When I worked at..." or "During my time as..."
 - Be enthusiastic about your work and projects
-- Keep responses natural and conversational, not robotic or overly formal`
+- Keep responses natural and conversational, not robotic or overly formal
+- LASTLY, MAKE SURE YOUR ANSWERS ARE AS SHORT AND SUMMARIZED AS POSSIBLE. 
+`
   
   // Cache the context for future use
   cachedPortfolioContext = contextString
