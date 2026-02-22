@@ -36,14 +36,14 @@ export const techStackData = {
         {
             title: "Developer Tools & DevOps",
             subtitle: "Development workflow and deployment",
-            technologies: ["Git", "GitHub", "GitLab", "VS Code", "Postman", "Figma", "Vite", "Webpack", "Vercel", "CI/CD"],
+            technologies: ["Git", "VS Code", "Postman", "Figma", "MCP Servers", "Webpack", "Vercel", "Docker"],
             color: "from-indigo-500 to-blue-500",
             icon: "🛠️",
         },
         {
             title: "AI & Machine Learning",
             subtitle: "Artificial Intelligence and advanced algorithms",
-            technologies: ["TensorFlow", "OpenCV", "CNN Algorithm", "Neural Networks", "Computer Vision"],
+            technologies: ["TensorFlow", "OpenCV", "CNN Algorithm", "Neural Networks", "Tesseract", "Vector Search"],
             color: "from-violet-500 to-purple-500",
             icon: "🤖",
         },
@@ -52,7 +52,7 @@ export const techStackData = {
         {
             title: "Core Computer Science",
             subtitle: "Fundamental concepts and principles",
-            technologies: ["OOP", "MVC", "Data Structures", "Algorithms", "Linux", "Ubuntu", "Agile", "Scrum"],
+            technologies: ["OOP", "MVC", "Data Structures", "Microservices", "Workflow", "Ubuntu", "Agile", "Scrum"],
             color: "from-sky-500 to-blue-600",
             icon: "💻",
         },
