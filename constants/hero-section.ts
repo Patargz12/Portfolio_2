@@ -11,12 +11,12 @@ export const heroData = {
     },
     achievements: [
         {
-            title: "Level 1 - Hackathon Winner",
+            title: "Hackathon Winner",
             subtitle: "Recognized for innovation and execution",
             colorScheme: "primary", // from-primary/10 to-accent/10
         },
         {
-            title: "Top 5% in Leetcode",
+            title: "Top 1% in Leetcode",
             subtitle: "Out of 5,000,000+ users",
             colorScheme: "accent", // from-accent/10 to-secondary/10
         },
