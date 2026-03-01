@@ -2,7 +2,7 @@ export const experienceData = {
     experiences: [
         {
             title: "Frontend Developer",
-            company: "Media Meter Inc.",
+            company: "Rythmos DB",
             period: "Mar 2025 - Present",
             responsibilities: [
                 "Led frontend development of LexiBean, implementing conversational UI, natural language processing response rendering, and case search workflows for an AI-powered legal assistant.",
