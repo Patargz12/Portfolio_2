@@ -74,6 +74,17 @@ export const projectsData = {
             link: "https://salina.app/",
         },
         {
+            id: 13,
+            title: "NeoPulse",
+            description:
+                "A web application that detects nearby asteroids around Earth for potential threat and analyzes its impact on Earth using Amazon Nova Lite",
+            image: "/projects/neopulse_img.jpg",
+            tags: ["NextJS", "NASA Neo", "Amazon Lite"],
+            categories: ["AI/ML", "Web App"],
+            github: "https://github.com/Patargz12/NeoPulse",
+            link: "https://neopulse.vercel.app/",
+        },
+        {
             id: 6,
             title: "Crypto Tracker",
             description:
