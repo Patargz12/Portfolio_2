@@ -24,6 +24,21 @@ export function ChatWidget() {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Recommended chat prompts
+  const recommendedChats = [
+    "Are you available for work?",
+    "What projects are you most proud of?",
+    "How can I contact you?",
+    "Tell me about your tech stack."
+  ]
+
+  const handleRecommendedClick = (text: string) => {
+    setInput(text)
+    if (textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }
+
   useEffect(() => {
     // Update token estimate whenever messages change
     const conversationMessages = messages.slice(1)
@@ -158,7 +173,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-0 right-0 z-[9999] p-4">
+    <div className="fixed bottom-0 right-0 z-9999 p-4">
       {/* Chat Window */}
       <div
         className={cn(
@@ -170,7 +185,7 @@ export function ChatWidget() {
       >
         <div className="bg-card border border-border rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
           {/* Header */}
-          <div className="bg-gradient-to-r from-primary/20 to-accent/20 border-b border-border px-5 py-2 flex items-center justify-between">
+          <div className="bg-linear-to-r from-primary/20 to-accent/20 border-b border-border px-5 py-2 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="w-12 h-12 rounded-full overflow-hidden">
@@ -203,11 +218,12 @@ export function ChatWidget() {
             </button>
           </div>
 
-          {/* Messages */}
+          {/* Messages & Recommended Chats (recommendations inside scroll area, compact) */}
           <div 
             ref={messagesContainerRef}
-            className="h-[400px] overflow-y-auto p-4 space-y-4 bg-background/50 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50"
+            className="h-[400px] overflow-y-auto p-4 space-y-3 bg-background/50 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50"
           >
+            {/* Messages */}
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -217,7 +233,7 @@ export function ChatWidget() {
                 )}
               >
                 {/* Avatar */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {message.role === "assistant" ? (
                     <div className="w-9 h-9 rounded-full overflow-hidden">
                       <Image
@@ -240,7 +256,7 @@ export function ChatWidget() {
                   className={cn(
                     "max-w-[75%] rounded-2xl px-4 py-2.5 text-sm",
                     message.role === "user"
-                      ? "bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
+                      ? "bg-linear-to-br from-primary to-primary/80 text-primary-foreground"
                       : "bg-muted/50 text-foreground border border-border/50"
                   )}
                 >
@@ -263,9 +279,28 @@ export function ChatWidget() {
                 </div>
               </div>
             ))}
+            {/* Recommended Chats - Compact, only if no user messages, always after messages */}
+            {messages.filter(m => m.role === "user").length === 0 && (
+              <div className="flex flex-col gap-2 mt-2">
+                {recommendedChats.map((rec, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="w-full flex items-center gap-2 p-2 rounded-lg bg-background/70 border border-border shadow-sm hover:bg-primary/10 transition-colors text-left text-foreground disabled:opacity-60 min-h-8"
+                    onClick={() => handleRecommendedClick(rec)}
+                    disabled={isLoading}
+                    style={{ minHeight: '32px' }}
+                  >
+                    <span className="flex items-center justify-center w-6 h-6 rounded bg-primary/10 text-primary">
+                      <MessageCircle className="w-4 h-4" />
+                    </span>
+                    <span className="text-xs font-medium leading-tight">{rec}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
-
           {/* Input */}
           <div className="p-4 border-t border-border bg-card/80 backdrop-blur-sm">
             <div className="flex gap-2 items-end">
@@ -277,14 +312,14 @@ export function ChatWidget() {
                 placeholder="Ask me anything..."
                 disabled={isLoading}
                 rows={1}
-                className="flex-1 bg-background/60 border border-input rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring disabled:opacity-50 resize-none min-h-[40px] max-h-[72px] transition-all scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50"
+                className="flex-1 bg-background/60 border border-input rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring disabled:opacity-50 resize-none min-h-10 max-h-[72px] transition-all scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50"
                 style={{ height: "auto", overflowY: "hidden" }}
               />
               <Button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
                 size="icon"
-                className="rounded-xl bg-gradient-to-br from-primary to-accent hover:opacity-90 transition-opacity flex-shrink-0"
+                className="rounded-xl bg-linear-to-br from-primary to-accent hover:opacity-90 transition-opacity shrink-0"
               >
                 <Send className="w-4 h-4" />
               </Button>
@@ -298,7 +333,7 @@ export function ChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         size="icon-lg"
         className={cn(
-          "rounded-full shadow-2xl bg-gradient-to-br from-primary to-accent hover:opacity-90 transition-all duration-300 absolute bottom-8 right-8",
+          "rounded-full shadow-2xl bg-linear-to-br from-primary to-accent hover:opacity-90 transition-all duration-300 absolute bottom-8 right-8",
           isOpen && "scale-0 opacity-0"
         )}
       >

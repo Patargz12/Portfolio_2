@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Full-stack Software Engineer specializing in React, Next, Node.js, MongoDB, and Express. Building scalable web applications.",
   icons: {
-    icon: "/Portfolio_Icon.ico",
+    icon: "/Portfolio_Icon.png",
     apple: "/apple-icon.png",
   },
 }
